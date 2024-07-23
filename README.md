@@ -4,7 +4,9 @@
 
 Project aims to map location of various amenities such as microwaves, water fountains, washrooms, and cafes (that serve caffeinated drinks) on campus. The UBC Survival Kit aims to address the common issues faced by students in locating essential amenities within campus buildings.
 
+## Collaborators
 
-## Collaborators 
 <a name="collaborators"></a>
 [![Collaborator](https://img.shields.io/badge/collaborator-3-blue.svg)](https://github.com/Anica1004)
+
+[Milestone 3 Design](Milestone_3_Design.pdf)
