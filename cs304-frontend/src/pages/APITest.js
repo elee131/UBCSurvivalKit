@@ -1,30 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
-function Fetch(name) {
-  const [info, setInfo] = useState();
-  useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        // setInfo(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-  // return (
-  //   <div>
-  //     <p>{info}</p>
-  //   </div>
-  // );
-}
 
 function App() {
   const [request, setRequest] = useState("");
+  const [info, setInfo] = useState();
+  var data = null;
+  const search = async () => {
+    try {
+      data = await (
+        await fetch(`https://pokeapi.co/api/v2/pokemon/${request}`)
+      ).json();
+      console.log(data);
+      setInfo(data);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
   return (
     <div>
       <Link to="/"> Home </Link>
@@ -37,7 +28,10 @@ function App() {
         onChange={(e) => setRequest(e.target.value)}
         placeholder="Insert Name of Pokemon"
       />
-      <button onClick={() => Fetch(request)}> Find </button>
+      <button type="submit" onClick={search}>
+        Search
+      </button>
+      <p>{JSON.stringify(info)}</p>
     </div>
   );
 }
