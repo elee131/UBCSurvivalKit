@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import Request from "./pages/Request";
+import APITest from "./pages/APITest";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/request" element={<Request />} />
+        <Route path="/testing" element={<APITest />} />
       </Routes>
     </BrowserRouter>
   );
