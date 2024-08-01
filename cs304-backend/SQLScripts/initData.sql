@@ -2,7 +2,6 @@ DROP TABLE Review;
 DROP TABLE Serves;
 DROP TABLE Drink;
 DROP TABLE Cafe;
-DROP TABLE Drink;
 DROP TABLE WaterFountain;
 DROP TABLE Microwave;
 DROP TABLE Washroom;
@@ -299,7 +298,7 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000000, 2.4, 'BIOL', '/images/BIOL', 0);
+(10000000, 5.0, 'BIOL', '/images/BIOL', 0);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
@@ -307,21 +306,21 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000002, 3.2, 'MATX', '/images/MATX', 1);
+(10000002, 5.0, 'MATX', '/images/MATX', 1);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000003, 1.9, 'NEST', '/images/NEST', 3);
+(10000003, 5.0, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000004, 4.6, 'KAIS', '/images/KAIS', 4);
+(10000004, 5.0, 'KAIS', '/images/KAIS', 4);
 
 
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000000, 2.4, 'BIOL', '/images/BIOL', 0);
+(20000000, 5.0, 'BIOL', '/images/BIOL', 0);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
@@ -329,21 +328,21 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000002, 3.2, 'MATX', '/images/MATX', 2);
+(20000002, 5.0, 'MATX', '/images/MATX', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000003, 1.9, 'NEST', '/images/NEST', 3);
+(20000003, 5.0, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000004, 4.6, 'KAIS', '/images/KAIS', 4);
+(20000004, 5.0, 'KAIS', '/images/KAIS', 4);
 
 
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000000, 2.4, 'BIOL', '/images/BIOL', 0);
+(30000000, 5.0, 'BIOL', '/images/BIOL', 0);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
@@ -351,15 +350,15 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000002, 3.2, 'MATX', '/images/MATX', 2);
+(30000002, 5.0, 'MATX', '/images/MATX', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000003, 1.9, 'NEST', '/images/NEST', 3);
+(30000003, 5.0, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000004, 4.6, 'KAIS', '/images/KAIS', 4);
+(30000004, 5.0, 'KAIS', '/images/KAIS', 4);
 
 
 
@@ -518,31 +517,25 @@ VALUES
 
 
 
-
-
-
-
-
-
 INSERT INTO Review
 VALUES
     (1, 10000000, 0, 1, 1, 1, 'REALLY BAD');
 
 INSERT INTO Review
 VALUES
-    (2, 10000001, 1, 2, 1, 3, 'AWFUL');
+    (2, 10000001, 1, 1, 1, 1, 'AWFUL');
 
 INSERT INTO Review
 VALUES
-    (3, 10000002, 2, 2, 3, 4, 'MEH');
+    (3, 10000002, 2, 2, 2, 2, 'MEH');
 
 INSERT INTO Review
 VALUES
-    (4, 10000004, 3, 5, 5, 5, 'AMAZING');
+    (4, 10000004, 3, 3, 3, 3, 'AMAZING');
 
 INSERT INTO Review
 VALUES
-    (5, 20000001, 4, 5, 3, 4, 'GREAT!');
+    (5, 20000001, 4, 4, 4, 4, 'GREAT!');
 
 
 
