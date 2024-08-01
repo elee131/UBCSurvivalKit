@@ -130,97 +130,97 @@ CREATE TABLE AverageRating(
 CREATE TABLE Review(
     reviewID INTEGER,
     utilityID INTEGER,
-    userID INTEGER NOT NULL DEFAULT 0,
+    userID INTEGER NOT NULL,
     cleanliness INTEGER NOT NULL,
     functionality INTEGER NOT NULL,
     accessibility INTEGER NOT NULL,
     description VARCHAR(250),
     PRIMARY KEY (reviewID, utilityID),
     FOREIGN KEY (utilityID) REFERENCES Utility,
-    FOREIGN KEY (userID) REFERENCES UserInfo ON DELETE SET DEFAULT
+    FOREIGN KEY (userID) REFERENCES UserInfo ON DELETE CASCADE
 );
 
 INSERT INTO Image(url, description)
 VALUES
-("/images/iced-latte", 'iced latte');
+(''/images/iced-latte'', 'iced latte');
 
 INSERT INTO Image(url, description)
 VALUES
-("/images/london-fog", "london fog");
+(''/images/london-fog'', 'london fog');
 
 INSERT INTO Image(url, description)
 VALUES
-("/images/cappuccino", "cappuccino");
+(''/images/cappuccino'', 'cappuccino');
 
 INSERT INTO Image(url, description)
 VALUES
-("/images/sauder-tim-hortons", "Tim Hortons (Sauder location)");
+(''/images/sauder-tim-hortons'', 'Tim Hortons (Sauder location)');
 
 INSERT INTO Image(url, description)
 VALUES
-("/images/ICICS-top-floor-male-washroom", "Male Washroom (ICICS top floor)");
+(''/images/ICICS-top-floor-male-washroom'', 'Male Washroom (ICICS top floor)');
 
 
 
 INSERT INTO Drink(name)
 VALUES
-("Iced Latte");
+('Iced Latte');
 
 INSERT INTO Drink(name)
 VALUES
-("London Fog");
+('London Fog');
 
 INSERT INTO Drink(name)
 VALUES
-("Cappuccino");
+('Cappuccino');
 
 INSERT INTO Drink(name)
 VALUES
-("Dark Roast");
+('Dark Roast');
 
 INSERT INTO Drink(name)
 VALUES
-("Espresso");
+('Espresso');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(1732, "Iced Latte");
+(1732, 'Iced Latte');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(1732, "Espresso");
+(1732, 'Espresso');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(3812, "London Fog");
+(3812, 'London Fog');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(3812, "Dark Roast");
+(3812, 'Dark Roast');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(3812, "Iced Latte");
+(3812, 'Iced Latte');
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(0, 2.4, "BIOL", "/images/BIOL", 0);
+(0, 2.4, 'BIOL', ''/images/BIOL'', 0);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(1, 5.0, "ICCS", "/images/ICICS-top-floor-male-washroom", 2);
+(1, 5.0, 'ICCS', ''/images/ICICS-top-floor-male-washroom'', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(2, 3.2, "ICCS", "/images/ICCS-elevator", 1);
+(2, 3.2, 'ICCS', '/images/ICCS-elevator', 1);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(3, 1.9, "NEST", "/images/NEST-garden", 3);
+(3, 1.9, 'NEST', '/images/NEST-garden', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(4, 4.6, "NEST", "/images/NEST-washroom", 5);
+(4, 4.6, 'NEST', '/images/NEST-washroom', 5);
 
 INSERT INTO Location (locationID, floor, locationDescription)
 VALUES
@@ -369,23 +369,23 @@ VALUES
 
 INSERT INTO Cafe(cafeID, name, operatingHours, buildingCode, locationID)
 VALUES
-(1732, "Tim Hortons", "9:00 - 21:00", 'ICCS', 0);
+(1732, 'Tim Hortons', '9:00 - 21:00', 'ICCS', 0);
 
 INSERT INTO Cafe(cafeID, name, operatingHours, buildingCode, locationID)
 VALUES
-(3812, "Starbucks", "8:30 - 23:00", 'KAIS', 0);
+(3812, 'Starbucks', '8:30 - 23:00', 'KAIS', 0);
 
 INSERT INTO Cafe(cafeID, name, operatingHours, buildingCode, locationID)
 VALUES
-(8128, "Blue Chip Cafe", "9:00 - 17:00", 'NEST', 0);
+(8128, 'Blue Chip Cafe', '9:00 - 17:00', 'NEST', 0);
 
 INSERT INTO Cafe(cafeID, name, operatingHours, buildingCode, locationID)
 VALUES
-(5921, "Loafe Cafe", "8:00 - 17:00", 'NEST', 0);
+(5921, 'Loafe Cafe', '8:00 - 17:00', 'NEST', 0);
 
 INSERT INTO Cafe(cafeID, name, operatingHours, buildingCode, locationID)
 VALUES
-(7391, "JJ Bean Coffee Roasters", "8:00 - 17:00", 'MATX', 0);
+(7391, 'JJ Bean Coffee Roasters', '8:00 - 17:00', 'MATX', 0);
 
 INSERT INTO AverageRating
 VALUES
