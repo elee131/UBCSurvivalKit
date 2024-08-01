@@ -154,7 +154,7 @@ VALUES
 
 INSERT INTO Image(url, description)
 VALUES
-('/images/sauder-tim-hortons', Tim Hortons (Sauder location)');
+('/images/sauder-tim-hortons', 'Tim Hortons (Sauder location)');
 
 INSERT INTO Image(url, description)
 VALUES
