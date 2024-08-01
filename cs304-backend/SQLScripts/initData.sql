@@ -1,5 +1,6 @@
 DROP TABLE Review;
 DROP TABLE Serves;
+DROP TABLE Drink;
 DROP TABLE Cafe;
 DROP TABLE Drink;
 DROP TABLE WaterFountain;
@@ -49,6 +50,7 @@ CREATE TABLE Utility (
     locationID INTEGER NOT NULL,
     FOREIGN KEY (imageURL) REFERENCES Image(url),
     FOREIGN KEY (locationID) REFERENCES Location,
+    FOREIGN KEY (overallRating) REFERENCES Rating,
     FOREIGN KEY (buildingCode) REFERENCES Building ON DELETE CASCADE
 );
 
@@ -137,6 +139,7 @@ CREATE TABLE Review(
     accessibility INTEGER NOT NULL,
     description VARCHAR(250),
     PRIMARY KEY (reviewID, utilityID),
+    FOREIGN KEY (cleanliness, functionality, accessibility) REFERENCES AverageRating,
     FOREIGN KEY (utilityID) REFERENCES Utility,
     FOREIGN KEY (userID) REFERENCES UserInfo ON DELETE CASCADE
 );
