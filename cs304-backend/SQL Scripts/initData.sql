@@ -24,7 +24,7 @@ CREATE TABLE Location (
 CREATE TABLE Building(
     buildingCode VARCHAR(10) PRIMARY KEY,
     operatingHours VARCHAR(100),
-    name VARCHAR(20) UNIQUE
+    name VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE Rating(
@@ -142,23 +142,23 @@ CREATE TABLE Review(
 
 INSERT INTO Image(url, description)
 VALUES
-(''/images/iced-latte'', 'iced latte');
+('/images/iced-latte', 'iced latte');
 
 INSERT INTO Image(url, description)
 VALUES
-(''/images/london-fog'', 'london fog');
+('/images/london-fog', 'london fog');
 
 INSERT INTO Image(url, description)
 VALUES
-(''/images/cappuccino'', 'cappuccino');
+('/images/cappuccino', 'cappuccino');
 
 INSERT INTO Image(url, description)
 VALUES
-(''/images/sauder-tim-hortons'', 'Tim Hortons (Sauder location)');
+('/images/sauder-tim-hortons', Tim Hortons (Sauder location)');
 
 INSERT INTO Image(url, description)
 VALUES
-(''/images/ICICS-top-floor-male-washroom'', 'Male Washroom (ICICS top floor)');
+('/images/ICICS-top-floor-male-washroom', 'Male Washroom (ICICS top floor)');
 
 
 
@@ -204,11 +204,11 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(0, 2.4, 'BIOL', ''/images/BIOL'', 0);
+(0, 2.4, 'BIOL', '/images/BIOL', 0);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(1, 5.0, 'ICCS', ''/images/ICICS-top-floor-male-washroom'', 2);
+(1, 5.0, 'ICCS', '/images/ICICS-top-floor-male-washroom', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
@@ -232,7 +232,7 @@ VALUES
 
 INSERT INTO Location (locationID, floor, locationDescription)
 VALUES
-(2, 2, 'by the men''s washroom');
+(2, 2, 'by the mens washroom');
 
 INSERT INTO Location (locationID, floor, locationDescription)
 VALUES
@@ -263,27 +263,27 @@ VALUES
 (4, 'Joey', 'j@email.com', 'password');
 
 INSERT INTO Request (
-    requestID, date, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
 (0, 2024-07-01, 'default', 'update', 'fountain', 'CS building', 0, NULL);
 
 INSERT INTO Request (
-    requestID, date, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
 (1, 2023-07-01, 'water fountain broke', 'update', 'fountain', 'Nest', 2, NULL);
 
 INSERT INTO Request (
-    requestID, date, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
 (2, 2024-05-01, 'new cafe', 'add', 'cafe', 'fred kaiser', 3, NULL);
 
 INSERT INTO Request (
-    requestID, date, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
 (3, 2024-03-01, 'new neutral washroom', 'add', 'washroom', 'math annex', 4, NULL);
 
 INSERT INTO Request (
-    requestID, date, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
 (4, 2024-04-20, 'microwave broke', 'update', 'microwave', 'biology', 1, NULL);
 
