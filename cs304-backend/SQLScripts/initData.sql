@@ -1,5 +1,6 @@
 DROP TABLE Review;
 DROP TABLE Serves;
+DROP TABLE Drink;
 DROP TABLE Cafe;
 DROP TABLE WaterFountain;
 DROP TABLE Microwave;
@@ -33,7 +34,7 @@ CREATE TABLE Rating(
 );
 
 CREATE TABLE Image(
-    url VARCHAR(20) PRIMARY KEY,
+    url VARCHAR(100) PRIMARY KEY,
     description VARCHAR(150)
 );
 
@@ -48,6 +49,7 @@ CREATE TABLE Utility (
     locationID INTEGER NOT NULL,
     FOREIGN KEY (imageURL) REFERENCES Image(url),
     FOREIGN KEY (locationID) REFERENCES Location,
+    FOREIGN KEY (overallRating) REFERENCES Rating,
     FOREIGN KEY (buildingCode) REFERENCES Building ON DELETE CASCADE
 );
 
@@ -136,6 +138,7 @@ CREATE TABLE Review(
     accessibility INTEGER NOT NULL,
     description VARCHAR(250),
     PRIMARY KEY (reviewID, utilityID),
+    FOREIGN KEY (cleanliness, functionality, accessibility) REFERENCES AverageRating,
     FOREIGN KEY (utilityID) REFERENCES Utility,
     FOREIGN KEY (userID) REFERENCES UserInfo ON DELETE CASCADE
 );
@@ -262,31 +265,31 @@ INSERT INTO UserInfo (userID, username, email, password)
 VALUES
 (4, 'Joey', 'j@email.com', 'password');
 
-INSERT INTO Request (
+NSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
-(0, 2024-07-01, 'default', 'update', 'fountain', 'CS building', 0, NULL);
+(0, TO_DATE('2024-07-01', 'YYYY-MM-DD'), 'default', 'update', 'fountain', 'CS building', 0, NULL);
 
 INSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
-(1, 2023-07-01, 'water fountain broke', 'update', 'fountain', 'Nest', 2, NULL);
+(1, TO_DATE('2023-07-01', 'YYYY-MM-DD'), 'water fountain broke', 'update', 'fountain', 'Nest', 2, NULL);
+
+-- Group 4
+INSERT INTO Request (
+    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
+VALUES
+(2, TO_DATE('2024-05-01', 'YYYY-MM-DD'), 'new cafe', 'add', 'cafe', 'fred kaiser', 3, NULL);
 
 INSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
-(2, 2024-05-01, 'new cafe', 'add', 'cafe', 'fred kaiser', 3, NULL);
+(3, TO_DATE('2024-03-01', 'YYYY-MM-DD'), 'new neutral washroom', 'add', 'washroom', 'math annex', 4, NULL);
 
 INSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES
-(3, 2024-03-01, 'new neutral washroom', 'add', 'washroom', 'math annex', 4, NULL);
-
-INSERT INTO Request (
-    requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
-VALUES
-(4, 2024-04-20, 'microwave broke', 'update', 'microwave', 'biology', 1, NULL);
-
+(4, TO_DATE('2024-04-20', 'YYYY-MM-DD'), 'microwave broke', 'update', 'microwave', 'biology', 1, NULL);
 INSERT INTO Building (buildingCode, operatingHours, name)
 VALUES
 ('BIOL', 'Mon to Fri: 7:30AM - 8:00PM, Sat/Sun/Holidays: Closed', 'Biological Sciences');
