@@ -22,3 +22,14 @@
   float: left;
   padding: 5px;
 }
+
+.Request {
+  background-color: rgb(53, 109, 91);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: small;
+  display: block;
+  border-style: solid;
+}

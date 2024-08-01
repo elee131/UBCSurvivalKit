@@ -8,6 +8,7 @@ function App() {
         <Link to="/login"> Login </Link>
         <Link to="/registration"> Registration </Link>
         <Link to="/request"> Request </Link>
+        <Link to="/admin"> Admin Page </Link>
         <Link to="/testing"> Test </Link>
       </header>
     </div>
