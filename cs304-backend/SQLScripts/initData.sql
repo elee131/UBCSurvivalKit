@@ -1,19 +1,19 @@
-DROP TABLE Rating;
-DROP TABLE Microwave;
+DROP TABLE Review;
+DROP TABLE Serves;
+DROP TABLE Cafe;
 DROP TABLE WaterFountain;
+DROP TABLE Microwave;
 DROP TABLE Washroom;
 DROP TABLE Utility;
-DROP TABLE AverageRating;
-DROP TABLE Serves;
-DROP TABLE Drink;
-DROP TABLE Cafe;
+DROP TABLE Rating;
 DROP TABLE Request;
-Drop Table Review;
-DROP TABLE Hours;
 DROP TABLE UserInfo;
-DROP TABLE Building;
 DROP TABLE Location;
+DROP TABLE AverageRating;
+DROP TABLE Hours;
+DROP TABLE Building;
 DROP TABLE Image;
+
 
 CREATE TABLE Location (
     locationID INTEGER PRIMARY KEY,
