@@ -141,3 +141,6 @@ CREATE TABLE Request(
     FOREIGN KEY (imageURL) REFERENCES Image(url),
     FOREIGN KEY (userID) REFERENCES UserInfo(userID) ON DELETE CASCADE
 );
+
+INSERT INTO Review(reviewID, utilityID, userID, cleanliness, funcitonality, accessibility, description)
+VALUES
