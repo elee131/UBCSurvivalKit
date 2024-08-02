@@ -6,6 +6,12 @@ const router = express.Router();
 // ----------------------------------------------------------
 // API endpoints
 // Modify or extend these routes based on your project's needs.
+
+//router.get('/', function (req, res) {
+//  console.log("in get slash")
+//  res.send("HII");
+//});
+
 router.get('/check-db-connection', async (req, res) => {
     const isConnect = await appService.testOracleConnection();
     if (isConnect) {
@@ -20,6 +26,15 @@ router.get('/demotable', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/WaterFountain', async (req, res) => {
+    const tableContent = await appService.fetchWaterFountainFromDB();
+    res.json({data: tableContent});
+});
+
+router.get('/fountain', async (req, res) => {
+    const tableContent = await appService.fetchWaterFountainFromDB();
+    res.json({data: tableContent});
+});
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {
