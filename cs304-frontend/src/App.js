@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import Request from "./pages/Request";
+import Utilities from "./pages/Utilities";
 import AdminPage from "./pages/AdminPage";
 import APITest from "./pages/APITest";
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/request" element={<Request />} />
+        <Route path="/utilities" element={<Utilities />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/testing" element={<APITest />} />
       </Routes>
