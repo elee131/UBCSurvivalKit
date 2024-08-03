@@ -115,19 +115,106 @@ async function initiateDemotable() {
     });
 }
 
-async function insertDemotable(id, name) {
+async function insertUtility(utilityID, overallRating, buildingCode, imageURL, locationID) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `INSERT INTO DEMOTABLE (id, name) VALUES (:id, :name)`,
-            [id, name],
-            { autoCommit: true }
+            const utilResult = await connection.execute(
+                `INSERT INTO UTILITY (utilityID, overallRating, buildingCode, imageURL, locationID)
+                 VALUES (:utilityID, :overallRating, :buildingCode, :imageURL, :locationID)`,
+                 [utilityID, overallRating, buildingCode, imageURL, locationID],
+                 { autoCommit: true }
+            );
+
+            console.log(utilResult);
+            return utilResult.rowsAffected && utilResult.rowsAffected > 0;
+    }).catch(() => {
+            return false;
+    });
+}
+
+async function insertFountain(utilityID, overallRating, buildingCode, imageURL, locationID, hasColdWater, hasHotWater) {
+    return await withOracleDB(async (connection) => {
+        const utilResult = await insertUtility(utilityID, overallRating, buildingCode, imageURL, locationID);
+
+        if (!utilResult) {
+            throw new Error('Failed to insert into UTILITY table');
+        }
+
+        const waterResult = await connection.execute(
+        `INSERT INTO WATERFOUNTAIN (utilityID, hasColdWater, hasHotWater)
+        VALUES (:utilityID, :hasColdWater, :hasHotWater)`,
+        [utilityID, hasColdWater, hasHotWater],
+        { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        if (waterResult.rowsAffected === 0) {
+            throw new Error('Failed to insert into WATERFOUNTAIN table');
+        }
+
+        return true;
+
     }).catch(() => {
         return false;
     });
 }
+
+
+async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL, locationID, microwaveSize) {
+    return await withOracleDB(async (connection) => {
+
+        const utilResult = await insertUtility(utilityID, overallRating, buildingCode, imageURL, locationID);
+
+        if (!utilResult) {
+            throw new Error('Failed to insert into UTILITY table');
+        }
+
+        const microwaveResult = await connection.execute(
+            `INSERT INTO MICROWAVE (utilityID, microwaveSize)
+            VALUES (:utilityID, :microwaveSize)`,
+            [utilityID, microwaveSize],
+
+            { autoCommit: true }
+        );
+
+        if (microwaveResult.rowsAffected === 0) {
+            throw new Error('Failed to insert into MICROWAVE table');
+        }
+
+        return true;
+
+    }).catch(() => {
+        return false;
+    });
+}
+
+async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, locationID, gender, numStalls, accessibilityFeature) {
+    return await withOracleDB(async (connection) => {
+
+        const utilResult = await insertUtility(utilityID, overallRating, buildingCode, imageURL, locationID);
+
+        if (!utilResult) {
+            throw new Error('Failed to insert into UTILITY table');
+        }
+
+        const washroomResult = await connection.execute(
+            `INSERT INTO WASHROOM (utilityID, gender, numStalls, accessibilityFeature)
+            VALUES (:utilityID, :gender, :numStalls, :accessibilityFeature)`,
+            [utilityID, gender, numStalls, accessibilityFeature],
+
+            { autoCommit: true }
+        );
+
+        if (washroomResult.rowsAffected === 0) {
+            throw new Error('Failed to insert into MICROWAVE table');
+        }
+
+        return true;
+
+    }).catch(() => {
+        return false;
+    });
+}
+
+
 
 async function updateNameDemotable(oldName, newName) {
     return await withOracleDB(async (connection) => {
@@ -160,5 +247,8 @@ module.exports = {
     updateNameDemotable,
     countDemotable,
     fetchWaterFountainFromDB,
+    insertFountain,
+    insertMicrowave,
+    insertWashroom,
 
 };

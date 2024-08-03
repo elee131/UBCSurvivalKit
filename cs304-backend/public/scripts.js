@@ -37,38 +37,38 @@ async function checkDbConnection() {
 }
 
 // Fetches data from the demotable and displays it.
-async function fetchAndDisplayUsers() {
-    console.log("HI");
-    const tableElement = document.getElementById('demotable');
-    const tableBody = tableElement.querySelector('tbody');
-
-    const response = await fetch('/demotable', {
-        method: 'GET'
-    });
-
-    const responseData = await response.json();
-    const demotableContent = responseData.data;
-
-    // Always clear old, already fetched data before new fetching process.
-    if (tableBody) {
-        tableBody.innerHTML = '';
-    }
-
-    demotableContent.forEach(user => {
-        const row = tableBody.insertRow();
-        user.forEach((field, index) => {
-            const cell = row.insertCell(index);
-            cell.textContent = field;
-        });
-    });
-}
+//async function fetchAndDisplayUsers() {
+//    console.log("HI");
+//    const tableElement = document.getElementById('demotable');
+//    const tableBody = tableElement.querySelector('tbody');
+//
+//    const response = await fetch('/demotable', {
+//        method: 'GET'
+//    });
+//
+//    const responseData = await response.json();
+//    const demotableContent = responseData.data;
+//
+//    // Always clear old, already fetched data before new fetching process.
+//    if (tableBody) {
+//        tableBody.innerHTML = '';
+//    }
+//
+//    demotableContent.forEach(user => {
+//        const row = tableBody.insertRow();
+//        user.forEach((field, index) => {
+//            const cell = row.insertCell(index);
+//            cell.textContent = field;
+//        });
+//    });
+//}
 
 async function fetchAndDisplayFountain() {
     console.log("in fetch fountain");
     const tableElement = document.getElementById('fountain');
     const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch('/WaterFountain', {
+    const response = await fetch('/waterfountain', {
         method: 'GET'
     });
 
@@ -91,6 +91,21 @@ async function fetchAndDisplayFountain() {
 }
 
 // This function resets or initializes the demotable.
+async function resetDemotable() {
+    const response = await fetch("/initiate-demotable", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetResultMsg');
+        messageElement.textContent = "demotable initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
 async function resetDemotable() {
     const response = await fetch("/initiate-demotable", {
         method: 'POST'

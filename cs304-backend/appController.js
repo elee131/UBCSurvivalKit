@@ -26,15 +26,11 @@ router.get('/demotable', async (req, res) => {
     res.json({data: tableContent});
 });
 
-router.get('/WaterFountain', async (req, res) => {
+router.get('/waterfountain', async (req, res) => {
     const tableContent = await appService.fetchWaterFountainFromDB();
     res.json({data: tableContent});
 });
 
-router.get('/fountain', async (req, res) => {
-    const tableContent = await appService.fetchWaterFountainFromDB();
-    res.json({data: tableContent});
-});
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {
@@ -53,6 +49,42 @@ router.post("/insert-demotable", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.post("/insert-waterfountain", async (req, res) => {
+    const { utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater } = req.body;
+    const insertResult = await appService.insertFountain
+        (utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/insert-washroom", async (req, res) => {
+    const { utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures } = req.body;
+    const insertResult = await appService.insertWashroom
+        (utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post("/insert-microwave", async (req, res) => {
+    const { utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize } = req.body;
+    const insertResult = await appService.insertMicrowave
+        (utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
 
 router.post("/update-name-demotable", async (req, res) => {
     const { oldName, newName } = req.body;
