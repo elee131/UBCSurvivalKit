@@ -31,6 +31,7 @@ router.get('/waterfountain', async (req, res) => {
     res.json({data: tableContent});
 });
 
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {
@@ -48,6 +49,18 @@ router.post("/insert-demotable", async (req, res) => {
     } else {
         res.status(500).json({ success: false });
     }
+});
+
+router.get("/requested-utilities", async (req, res) => {
+    const { wrClicked, mClicked, wfClicked } = req.query;
+    const tableContent = await appService.fetchRequestedUtils(wrClicked, mClicked, wfClicked );
+    res.json({data: tableContent});
+});
+
+router.get("/requested-utilities-simple", async (req, res) => {
+    const { wrClicked, mClicked, wfClicked } = req.query;
+    const tableContent = await appService.fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked );
+    res.json({data: tableContent});
 });
 
 router.post("/insert-waterfountain", async (req, res) => {

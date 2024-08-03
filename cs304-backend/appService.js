@@ -96,6 +96,80 @@ async function fetchWaterFountainFromDB() {
 
 }
 
+async function fetchRequestedUtils(wrClicked, mClicked, wfClicked) {
+    return await withOracleDB(async (connection) => {
+        let results = [];
+
+        if (wrClicked) {
+            const result = await connection.execute(
+                `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
+                 FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        if (mClicked) {
+            const result = await connection.execute(
+                `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
+                FROM MICROWAVE NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        if (wfClicked) {
+            const result = await connection.execute(
+               `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
+               FROM WATERFOUNTAIN NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        return results;
+
+    }).catch((error) => {
+        console.error("Database query failed: ", error);
+        return [];
+    });
+}
+
+async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
+    return await withOracleDB(async (connection) => {
+        let results = [];
+
+        if (wrClicked) {
+            const result = await connection.execute(
+                `SELECT utilityID, buildingCode, operatingHour
+                 FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        if (mClicked) {
+            const result = await connection.execute(
+                `SELECT utilityID, buildingCode, operatingHour
+                FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        if (wfClicked) {
+            const result = await connection.execute(
+                `SELECT utilityID, buildingCode, operatingHour
+               FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+            );
+            results = results.concat(result.rows);
+        }
+
+        return results;
+
+    }).catch((error) => {
+        console.error("Database query failed: ", error);
+        return [];
+    });
+}
+
+
+
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
@@ -244,12 +318,13 @@ module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
     initiateDemotable,
-    insertDemotable,
     updateNameDemotable,
     countDemotable,
     fetchWaterFountainFromDB,
     insertFountain,
     insertMicrowave,
     insertWashroom,
+    fetchRequestedUtils,
+    fetchRequestedUtilsSimple
 
 };
