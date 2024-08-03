@@ -51,6 +51,18 @@ router.post("/insert-demotable", async (req, res) => {
     }
 });
 
+router.get("/util-with-numReviews", async (req, res) => {
+   const {minReviewNum} = req.query;
+   const result = await appService.utilsWithMinNumOfReviews(minReviewNum);
+   res.json({data: result});
+});
+
+router.get("/utils-at-building", async (req, res) => {
+   const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
+   const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
+   res.json({data: results});
+
+});
 
 router.get("/reviews", async (req, res) => {
    const {utilityID} = req.query;

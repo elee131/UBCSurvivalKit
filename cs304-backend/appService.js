@@ -240,7 +240,6 @@ async function insertUtility(utilityID, overallRating, buildingCode, imageURL, l
                  { autoCommit: true }
             );
 
-            console.log(utilResult);
             return utilResult.rowsAffected && utilResult.rowsAffected > 0;
     }).catch(() => {
             return false;
@@ -273,16 +272,60 @@ async function insertFountain(utilityID, overallRating, buildingCode, imageURL, 
     });
 }
 
-// async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, mfClicked) {
+async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked) {
+    return await withOracleDB(async (connection) => {
+        let query = `SELECT UTILITY.utilityID, overallRating, UTILITY.buildingCode, imageURL, HOURS.operatingHour
+                     FROM UTILITY
+                     LEFT JOIN HOURS ON UTILITY.buildingCode = HOURS.buildingCode`;
+
+        if (wrClicked) {
+            query += ` LEFT JOIN WASHROOM ON UTILITY.utilityID = WASHROOM.utilityID`;
+        }
+
+        if (mClicked) {
+            query += ` LEFT JOIN MICROWAVE ON UTILITY.utilityID = MICROWAVE.utilityID`;
+        }
+
+        if (wfClicked) {
+            query += ` LEFT JOIN WATERFOUNTAIN ON UTILITY.utilityID = WATERFOUNTAIN.utilityID`;
+        }
+
+        query += ` WHERE UTILITY.buildingCode = :buildingCode`;
+
+        try {
+            const result = await connection.execute(query, [buildingCode]);
+            return result.rows;
+        } catch (error) {
+            console.error("Error executing query:", error);
+            throw error;
+        }
+    }).catch( () => {
+        return false;
+    })
+}
+
+// async function utilsWithMinNumOfReviews(minReviewNum) {
+//     console.log("Minimum review number:", minReviewNum);
+//
 //     return await withOracleDB(async (connection) => {
-//         let query = `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour`;
-//         let tempFrom = ``
+//         try {
+//             const result = await connection.execute(
+//                 `SELECT r.utilityID, COUNT(*) AS Reviews
+//                  FROM Review r
+//                  GROUP BY r.utilityID
+//                  HAVING COUNT(*) >= :minReviewNum`,
+//                 [minReviewNum]
+//             );
 //
-//         if (wrClicked) {
-//
+//             console.log("Query result:", result);
+//             return result.rows;
+//         } catch (error) {
+//             console.error("Error executing query:", error);
+//             throw error;
 //         }
-//     })
+//     });
 // }
+
 
 
 async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL, locationID, microwaveSize) {
@@ -379,6 +422,8 @@ module.exports = {
     fetchRequestedUtils,
     fetchRequestedUtilsSimple,
     detailedUtilInfo,
-    fetchReviewsForUtil
+    fetchReviewsForUtil,
+    findUtilsAtBuilding,
+    utilsWithMinNumOfReviews
 
 };
