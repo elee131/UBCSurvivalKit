@@ -175,7 +175,7 @@ async function detailedUtilInfo(utilityID) {
         if (10000000 <= utilityID && utilityID < 20000000) {
             query = `SELECT *
                     FROM UTILITY NATURAL JOIN WASHROOM NATURAL JOIN HOURS 
-                        NATURAL JOIN RATING
+                        NATURAL JOIN RATING 
                     WHERE utilityID = :utilityID`;
         } else if (20000000 <= utilityID  && utilityID < 30000000) {
             query = `SELECT *
@@ -193,9 +193,22 @@ async function detailedUtilInfo(utilityID) {
 
         const result = await connection.execute(query, [utilityID]);
         return result.rows;
-    })
+    });
 }
 
+async function fetchReviewsForUtil(utilityID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM REVIEW r
+            WHERE r.utilityID = :utilityID`,
+            [utilityID]
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
 
 
 async function initiateDemotable() {
@@ -259,6 +272,17 @@ async function insertFountain(utilityID, overallRating, buildingCode, imageURL, 
         return false;
     });
 }
+
+// async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, mfClicked) {
+//     return await withOracleDB(async (connection) => {
+//         let query = `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour`;
+//         let tempFrom = ``
+//
+//         if (wrClicked) {
+//
+//         }
+//     })
+// }
 
 
 async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL, locationID, microwaveSize) {
@@ -354,6 +378,7 @@ module.exports = {
     insertWashroom,
     fetchRequestedUtils,
     fetchRequestedUtilsSimple,
-    detailedUtilInfo
+    detailedUtilInfo,
+    fetchReviewsForUtil
 
 };

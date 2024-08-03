@@ -52,6 +52,11 @@ router.post("/insert-demotable", async (req, res) => {
 });
 
 
+router.get("/reviews", async (req, res) => {
+   const {utilityID} = req.query;
+   const reviews = await appService.fetchReviewsForUtil(utilityID);
+   res.json({data: reviews});
+});
 
 router.get("/requested-utilities", async (req, res) => {
     const { wrClicked, mClicked, wfClicked } = req.query;
