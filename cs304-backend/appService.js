@@ -168,6 +168,34 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
     });
 }
 
+async function detailedUtilInfo(utilityID) {
+    return await withOracleDB(async (connection) => {
+        let query;
+
+        if (10000000 <= utilityID && utilityID < 20000000) {
+            query = `SELECT *
+                    FROM UTILITY NATURAL JOIN WASHROOM NATURAL JOIN HOURS 
+                        NATURAL JOIN RATING
+                    WHERE utilityID = :utilityID`;
+        } else if (20000000 <= utilityID  && utilityID < 30000000) {
+            query = `SELECT *
+                     FROM UTILITY NATURAL JOIN MICROWAVE NATURAL JOIN HOURS
+                                  NATURAL JOIN RATING
+                     WHERE utilityID = :utilityID`;
+        } else if (30000000 <= utilityID ) {
+            query = `SELECT *
+                     FROM UTILITY NATURAL JOIN WATERFOUNTAIN NATURAL JOIN HOURS
+                                  NATURAL JOIN RATING
+                     WHERE utilityID = :utilityID`;
+        } else {
+            throw new Error("Invalid utilityID format");
+        }
+
+        const result = await connection.execute(query, [utilityID]);
+        return result.rows;
+    })
+}
+
 
 
 async function initiateDemotable() {
@@ -325,6 +353,7 @@ module.exports = {
     insertMicrowave,
     insertWashroom,
     fetchRequestedUtils,
-    fetchRequestedUtilsSimple
+    fetchRequestedUtilsSimple,
+    detailedUtilInfo
 
 };

@@ -51,6 +51,8 @@ router.post("/insert-demotable", async (req, res) => {
     }
 });
 
+
+
 router.get("/requested-utilities", async (req, res) => {
     const { wrClicked, mClicked, wfClicked } = req.query;
     const tableContent = await appService.fetchRequestedUtils(wrClicked, mClicked, wfClicked );
@@ -61,6 +63,12 @@ router.get("/requested-utilities-simple", async (req, res) => {
     const { wrClicked, mClicked, wfClicked } = req.query;
     const tableContent = await appService.fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked );
     res.json({data: tableContent});
+});
+
+router.get("/detailed-util-info", async (req, res) => {
+    const { utilityID } = req.query;
+    const result = await appService.detailedUtilInfo(utilityID);
+    res.json({data: result} );
 });
 
 router.post("/insert-waterfountain", async (req, res) => {
