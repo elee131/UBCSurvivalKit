@@ -13,6 +13,7 @@ const dbConfig = {
     poolIncrement: 1,
     poolTimeout: 60
 };
+//
 
 // initialize connection pool
 async function initializeConnectionPool() {
