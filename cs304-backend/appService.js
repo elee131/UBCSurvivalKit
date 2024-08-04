@@ -661,8 +661,30 @@ async function findBestRatedBuilding() {
 }
 
 
+async function findAverageRating(){
+return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT b.buildingCode, AVG(u.overallRating)
+             FROM Utility u, Building b
+             WHERE u.buildingCode=b.buildingCode
+             GROUP BY b.buildingCode`
+        );
+
+        return result.rows;
+
+    }).catch( () => {
+        console.log("failed the query");
+    })
+}
+
+
+
+
+
+
 
 module.exports = {
+    findAverageRating,
     updateEmail,
     updatePassword,
     updateUsername,

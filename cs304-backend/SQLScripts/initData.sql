@@ -314,7 +314,7 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000004, 5.0, 'KAIS', '/images/KAIS', 4);
+(10000004, 2.7, 'KAIS', '/images/KAIS', 4);
 
 
 
@@ -354,7 +354,7 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000003, 51.0, 'NEST', '/images/NEST', 3);
+(30000003, 2.7, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
