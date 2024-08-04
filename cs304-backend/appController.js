@@ -64,6 +64,27 @@ router.get("/utils-at-building", async (req, res) => {
 
 });
 
+router.post("/logIn", async (req, res) => {
+    try {
+        const { userID, password } = req.body;
+
+        if (userID === undefined || password === undefined || password === '') {
+            return res.status(400).json({ success: false, message: 'Missing userID or password' });
+        }
+        const result = await appService.logIn(userID, password);
+
+        if (result) {
+            res.json({ success: true });
+        } else {
+            res.status(401).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+
 router.get("/reviews", async (req, res) => {
    const {utilityID} = req.query;
    const reviews = await appService.fetchReviewsForUtil(utilityID);
@@ -97,6 +118,17 @@ router.post("/insert-waterfountain", async (req, res) => {
     } else {
         res.status(500).json({ success: false });
     }
+});
+
+router.post("/newUser", async(req, res) =>{
+   const {userID, username, email, password} = req.body;
+   const insertResult = await appService.newUser(userID, username, email, password);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+
 });
 
 router.post("/insert-washroom", async (req, res) => {

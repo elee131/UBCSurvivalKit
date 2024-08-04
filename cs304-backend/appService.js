@@ -326,6 +326,49 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
 //     });
 // }
 
+async function newUser(userID, username, email, password) {
+    return await withOracleDB(async (connection) => {
+
+        const result = await connection.execute(
+            `INSERT INTO USERINFO (userID, username, email, password)
+            VALUES (:userID, :username, :email, :password)`,
+            [userID, username, email, password],
+
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            throw new Error('Failed to insert into USERINFO table');
+        }
+        return true;
+
+    }).catch(() => {
+        return false;
+    });
+}
+
+async function logIn(userID, password) {
+    return await withOracleDB(async (connection) => {
+       const result = await connection.execute(
+            `SELECT * 
+            FROM USERINFO
+            WHERE userID = :userID AND password = :password`,
+           [userID, password]
+       );
+
+       console.log(result);
+
+        if (result.rows.length === 0) {
+            console.log("userID or password is wrong")
+            return false;
+        }
+
+        return true;
+
+    });
+}
+
+
 
 
 async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL, locationID, microwaveSize) {
@@ -424,6 +467,8 @@ module.exports = {
     detailedUtilInfo,
     fetchReviewsForUtil,
     findUtilsAtBuilding,
-    utilsWithMinNumOfReviews
+    //utilsWithMinNumOfReviews,
+    logIn,
+    newUser
 
 };
