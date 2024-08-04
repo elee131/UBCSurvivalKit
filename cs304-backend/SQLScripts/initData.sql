@@ -414,14 +414,6 @@ VALUES
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
-(6001, 'Iced Latte');
-
-INSERT INTO Serves(cafeID, drinkName)
-VALUES
-(6000, 'Espresso');
-
-INSERT INTO Serves(cafeID, drinkName)
-VALUES
 (6001, 'Espresso');
 
 INSERT INTO Serves(cafeID, drinkName)
@@ -573,7 +565,7 @@ VALUES
 (4, TO_DATE('2024-05-01', 'YYYY-MM-DD'), 'microwave broke', 'update', 'microwave', 'biology', 1, NULL);
 
 
-
+commit;
 
 
 
