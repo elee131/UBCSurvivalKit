@@ -155,6 +155,20 @@ router.post("/insert-microwave", async (req, res) => {
 });
 
 
+router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {
+    const { reviewID, utilityID } = req.params;
+    const deleteResult = await appService.deleteReviews(reviewID, utilityID);
+    if (deleteResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+
+
+
 
 router.post("/update-name-demotable", async (req, res) => {
     const { oldName, newName } = req.body;
