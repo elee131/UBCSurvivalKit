@@ -16,7 +16,7 @@ function App() {
           <input
             type="text"
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
+            placeholder="Username or Email it's undecided :/"
           />
           <input
             type="text"

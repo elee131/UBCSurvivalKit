@@ -304,27 +304,27 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
     })
 }
 
-// async function utilsWithMinNumOfReviews(minReviewNum) {
-//     console.log("Minimum review number:", minReviewNum);
-//
-//     return await withOracleDB(async (connection) => {
-//         try {
-//             const result = await connection.execute(
-//                 `SELECT r.utilityID, COUNT(*) AS Reviews
-//                  FROM Review r
-//                  GROUP BY r.utilityID
-//                  HAVING COUNT(*) >= :minReviewNum`,
-//                 [minReviewNum]
-//             );
-//
-//             console.log("Query result:", result);
-//             return result.rows;
-//         } catch (error) {
-//             console.error("Error executing query:", error);
-//             throw error;
-//         }
-//     });
-// }
+async function utilsWithMinNumOfReviews(minReviewNum) {
+    console.log("Minimum review number:", minReviewNum);
+
+    return await withOracleDB(async (connection) => {
+        try {
+            const result = await connection.execute(
+                `SELECT r.utilityID, COUNT(*) AS Reviews
+                 FROM Review r
+                 GROUP BY r.utilityID
+                 HAVING COUNT(*) >= :minReviewNum`,
+                [minReviewNum]
+            );
+
+            console.log("Query result:", result);
+            return result.rows;
+        } catch (error) {
+            console.error("Error executing query:", error);
+            throw error;
+        }
+    });
+}
 
 async function newUser(userID, username, email, password) {
     return await withOracleDB(async (connection) => {
@@ -427,6 +427,80 @@ async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, 
     });
 }
 
+async function findCafesWithDrinks(selectedDrinks) {
+    let drinksList = selectedDrinks.map(drink => `'${drink}'`).join(', ');
+
+    const query = `
+        SELECT c.*
+        FROM Cafe c
+        WHERE NOT EXISTS (
+            (SELECT name FROM Drink WHERE name IN (${drinksList}))
+            MINUS
+            (SELECT s.drinkName 
+             FROM Serves s
+             WHERE s.cafeID = c.cafeID)
+        )
+    `;
+
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(query);
+        return result.rows;
+    }).catch(() => {
+        console.error("failed to find cafe:", error);
+        return [];
+    })
+}
+
+
+async function insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description) {
+    return await withOracleDB(async (connection) => {
+
+        const result = await connection.execute(
+            `INSERT INTO Review
+            (reviewID, utilityID, userID, cleanliness, functionality, accessibility, description)
+            VALUES 
+            (:reviewID, :utilityID, :userID, :cleanliness, :functionality, :accessibility, :description)`,
+            [reviewID, utilityID, userID, cleanliness, functionality, accessibility, description],
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            throw new Error('Failed to insert into REVIEW table');
+        }
+
+        return true;
+    }).catch((error) => {
+        console.error('Insert review error:', error);
+        return false;
+    });
+}
+
+async function insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
+                             buildingName, userID,imageURL ) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO Request
+                (requestID, requestDate, status, requestDescription, 
+                 requestType, amenityType, buildingName, userID, imageURL)
+                VALUES 
+                    (:requestID, :requestDate, :status, 
+                     :requestDescription, :requestType, :amenityType, :buildingName, :userID, :imageURL)`,
+            [requestID, requestDate, status, requestDescription, requestType,
+                amenityType, buildingName, userID, imageURL],
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            throw new Error('Failed to insert into REQUEST table');
+        }
+
+        return true;
+    }).catch((error) => {
+        console.error('Insert REQUEST error:', error);
+        return false;
+    });
+}
+
 
 async function deleteReviews(reviewID, utilityID) {
     return await withOracleDB(async (connection) => {
@@ -485,10 +559,12 @@ module.exports = {
     detailedUtilInfo,
     fetchReviewsForUtil,
     findUtilsAtBuilding,
-    //utilsWithMinNumOfReviews,
     deleteReviews,
-
+    utilsWithMinNumOfReviews,
     logIn,
-    newUser
+    newUser,
+    insertReview,
+    insertRequest,
+    findCafesWithDrinks
 
 };

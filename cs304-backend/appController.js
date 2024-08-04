@@ -57,6 +57,21 @@ router.get("/util-with-numReviews", async (req, res) => {
    res.json({data: result});
 });
 
+router.get("/find-cafes-with-drink", async (req,res) => {
+    let selectedDrinks = req.query.selectedDrinks;
+
+    if (!selectedDrinks) {
+        res.status(400).json({message: "must choose drinks"});
+    }
+    if (typeof selectedDrinks === 'string') {
+        selectedDrinks = selectedDrinks.split(',');
+    }
+
+    const result = await appService.findCafesWithDrinks(selectedDrinks);
+    res.json({data: result});
+
+});
+
 router.get("/utils-at-building", async (req, res) => {
    const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
    const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
@@ -153,6 +168,32 @@ router.post("/insert-microwave", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.post("/insert-review", async (req, res) => {
+    const { reviewID, utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
+    const insertResult
+        = await appService.insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description);
+
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/insert-request", async (req, res) => {
+    const { requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL } = req.body;
+// handle date
+    const insertResult = await appService.insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+})
+
 
 
 router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {

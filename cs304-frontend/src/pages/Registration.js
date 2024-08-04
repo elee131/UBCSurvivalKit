@@ -4,6 +4,7 @@ import "./Style.css";
 
 function App() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
     <div>
@@ -20,6 +21,11 @@ function App() {
           />
           <input
             type="text"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+          />
+          <input
+            type="text"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
@@ -27,7 +33,14 @@ function App() {
             <div className="Login-submit">
               <button
                 onClick={() =>
-                  alert("username: " + username + "\npassword: " + password)
+                  alert(
+                    "username: " +
+                      username +
+                      "\nemail: " +
+                      email +
+                      "\npassword: " +
+                      password
+                  )
                 }
               >
                 Register
