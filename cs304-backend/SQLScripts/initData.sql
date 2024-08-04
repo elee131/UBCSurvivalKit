@@ -414,6 +414,14 @@ VALUES
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
+(6001, 'Iced Latte');
+
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
+(6000, 'Espresso');
+
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
 (6001, 'Espresso');
 
 INSERT INTO Serves(cafeID, drinkName)

@@ -1,3 +1,4 @@
+// source code from: https://github.students.cs.ubc.ca/CPSC304/CPSC304_Node_Project
 const oracledb = require('oracledb');
 const loadEnvFile = require('./utils/envUtil');
 
@@ -171,25 +172,22 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
 async function detailedUtilInfo(utilityID) {
     return await withOracleDB(async (connection) => {
         let query;
+        let table;
 
         if (10000000 <= utilityID && utilityID < 20000000) {
-            query = `SELECT *
-                    FROM UTILITY NATURAL JOIN WASHROOM NATURAL JOIN HOURS 
-                        NATURAL JOIN RATING 
-                    WHERE utilityID = :utilityID`;
+            table = `WASHROOM`
         } else if (20000000 <= utilityID  && utilityID < 30000000) {
-            query = `SELECT *
-                     FROM UTILITY NATURAL JOIN MICROWAVE NATURAL JOIN HOURS
-                                  NATURAL JOIN RATING
-                     WHERE utilityID = :utilityID`;
+            table = `MICROWAVE`
         } else if (30000000 <= utilityID ) {
-            query = `SELECT *
-                     FROM UTILITY NATURAL JOIN WATERFOUNTAIN NATURAL JOIN HOURS
-                                  NATURAL JOIN RATING
-                     WHERE utilityID = :utilityID`;
+            table = `WATERFOUNTAIN`
         } else {
-            throw new Error("Invalid utilityID format");
+            throw new Error("Invalid utilityID");
         }
+
+        query = `SELECT *
+            FROM UTILITY NATURAL JOIN ` + table +
+            ` NATURAL JOIN HOURS NATURAL JOIN RATING
+            WHERE utilityID = :utilityID `;
 
         const result = await connection.execute(query, [utilityID]);
         return result.rows;
@@ -210,24 +208,29 @@ async function fetchReviewsForUtil(utilityID) {
     });
 }
 
-
-async function initiateDemotable() {
+async function fetchCafesListView() {
     return await withOracleDB(async (connection) => {
-        try {
-            await connection.execute(`DROP TABLE DEMOTABLE`);
-        } catch(err) {
-            console.log('Table might not exist, proceeding to create...');
-        }
-
-        const result = await connection.execute(`
-            CREATE TABLE DEMOTABLE (
-                id NUMBER PRIMARY KEY,
-                name VARCHAR2(20)
-            )
-        `);
-        return true;
+        const result = await connection.execute(
+            `SELECT name, operatingHours, buildingCode
+            FROM CAFE c`
+        );
+        return result.rows;
     }).catch(() => {
-        return false;
+        return [];
+    });
+}
+
+async function fetchCafeDetails(cafeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM CAFE c
+            WHERE cafeID = :cafeID`,
+            [cafeID]
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
     });
 }
 
@@ -300,6 +303,21 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
             throw error;
         }
     }).catch( () => {
+        return false;
+    })
+}
+
+async function findCafesAtBuilding(buildingCode) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+          `SELECT name, operatingHours, buildingCode
+            FROM CAFE c
+            WHERE buildingCode = :buildingCode`,
+            [buildingCode]
+        );
+
+        return result.rows;
+    }).catch(() => {
         return false;
     })
 }
@@ -616,6 +634,30 @@ async function countDemotable() {
     });
 }
 
+async function findBestRatedBuilding() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.buildingCode, t.average
+             FROM (
+                  SELECT b.buildingCode, AVG(u.overallRating) as average
+                  FROM Building b, Utility u 
+                  WHERE b.buildingCode=u.buildingCode
+                  GROUP BY b.buildingCode) t
+                  WHERE t.average in (SELECT MAX(s.average) 
+                                       FROM (
+                                       SELECT b2.buildingCode, AVG(u2.overallRating) as average
+                                       FROM Building b2, Utility u2 
+                                       WHERE b2.buildingCode=u2.buildingCode
+                                       GROUP BY b2.buildingCode)s)`
+
+        );
+
+        return result.rows;
+
+    }).catch( () => {
+        console.log("failed the query");
+    })
+}
 
 
 
@@ -626,7 +668,6 @@ module.exports = {
     deleteAccount,
     testOracleConnection,
     fetchDemotableFromDb,
-    initiateDemotable,
     updateNameDemotable,
     countDemotable,
     fetchWaterFountainFromDB,
@@ -644,6 +685,11 @@ module.exports = {
     newUser,
     insertReview,
     insertRequest,
-    findCafesWithDrinks
+    findCafesWithDrinks,
+    fetchCafesListView,
+    fetchCafeDetails,
+    findBestRatedBuilding,
+    findCafesAtBuilding
+
 
 };
