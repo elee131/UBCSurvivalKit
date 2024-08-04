@@ -57,12 +57,48 @@ router.get("/util-with-numReviews", async (req, res) => {
    res.json({data: result});
 });
 
+router.get("/find-cafes-with-drink", async (req,res) => {
+    let selectedDrinks = req.query.selectedDrinks;
+
+    if (!selectedDrinks) {
+        res.status(400).json({message: "must choose drinks"});
+    }
+    if (typeof selectedDrinks === 'string') {
+        selectedDrinks = selectedDrinks.split(',');
+    }
+
+    const result = await appService.findCafesWithDrinks(selectedDrinks);
+    res.json({data: result});
+
+});
+
 router.get("/utils-at-building", async (req, res) => {
    const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
    const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
    res.json({data: results});
 
 });
+
+router.post("/logIn", async (req, res) => {
+    try {
+        const { userID, password } = req.body;
+
+        if (userID === undefined || password === undefined || password === '') {
+            return res.status(400).json({ success: false, message: 'Missing userID or password' });
+        }
+        const result = await appService.logIn(userID, password);
+
+        if (result) {
+            res.json({ success: true });
+        } else {
+            res.status(401).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 
 router.get("/reviews", async (req, res) => {
    const {utilityID} = req.query;
@@ -99,6 +135,17 @@ router.post("/insert-waterfountain", async (req, res) => {
     }
 });
 
+router.post("/newUser", async(req, res) =>{
+   const {userID, username, email, password} = req.body;
+   const insertResult = await appService.newUser(userID, username, email, password);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+
+});
+
 router.post("/insert-washroom", async (req, res) => {
     const { utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures } = req.body;
     const insertResult = await appService.insertWashroom
@@ -121,6 +168,32 @@ router.post("/insert-microwave", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
+
+router.post("/insert-review", async (req, res) => {
+    const { reviewID, utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
+    const insertResult
+        = await appService.insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description);
+
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/insert-request", async (req, res) => {
+    const { requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL } = req.body;
+// handle date
+    const insertResult = await appService.insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+})
+
 
 
 
