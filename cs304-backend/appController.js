@@ -154,6 +154,32 @@ router.post("/insert-microwave", async (req, res) => {
     }
 });
 
+router.post("/insert-review", async (req, res) => {
+    const { reviewID, utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
+    const insertResult
+        = await appService.insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description);
+
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/insert-request", async (req, res) => {
+    const { requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL } = req.body;
+// handle date
+    const insertResult = await appService.insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
+        buildingName, userID,imageURL);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+})
+
+
 
 
 router.post("/update-name-demotable", async (req, res) => {
