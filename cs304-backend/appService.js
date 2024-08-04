@@ -16,7 +16,6 @@ const dbConfig = {
 };
 //
 
-
 // initialize connection pool
 async function initializeConnectionPool() {
     try {
