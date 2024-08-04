@@ -119,7 +119,7 @@ async function fetchRequestedUtils(wrClicked, mClicked, wfClicked) {
 
         if (wfClicked) {
             const result = await connection.execute(
-               `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
+                `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
                FROM WATERFOUNTAIN NATURAL JOIN UTILITY NATURAL JOIN HOURS`
             );
             results = results.concat(result.rows);
@@ -236,16 +236,16 @@ async function fetchCafeDetails(cafeID) {
 
 async function insertUtility(utilityID, overallRating, buildingCode, imageURL, locationID) {
     return await withOracleDB(async (connection) => {
-            const utilResult = await connection.execute(
-                `INSERT INTO UTILITY (utilityID, overallRating, buildingCode, imageURL, locationID)
-                 VALUES (:utilityID, :overallRating, :buildingCode, :imageURL, :locationID)`,
-                 [utilityID, overallRating, buildingCode, imageURL, locationID],
-                 { autoCommit: true }
-            );
+        const utilResult = await connection.execute(
+            `INSERT INTO UTILITY (utilityID, overallRating, buildingCode, imageURL, locationID)
+             VALUES (:utilityID, :overallRating, :buildingCode, :imageURL, :locationID)`,
+            [utilityID, overallRating, buildingCode, imageURL, locationID],
+            { autoCommit: true }
+        );
 
-            return utilResult.rowsAffected && utilResult.rowsAffected > 0;
+        return utilResult.rowsAffected && utilResult.rowsAffected > 0;
     }).catch(() => {
-            return false;
+        return false;
     });
 }
 
@@ -258,10 +258,10 @@ async function insertFountain(utilityID, overallRating, buildingCode, imageURL, 
         }
 
         const waterResult = await connection.execute(
-        `INSERT INTO WATERFOUNTAIN (utilityID, hasColdWater, hasHotWater)
-        VALUES (:utilityID, :hasColdWater, :hasHotWater)`,
-        [utilityID, hasColdWater, hasHotWater],
-        { autoCommit: true }
+            `INSERT INTO WATERFOUNTAIN (utilityID, hasColdWater, hasHotWater)
+             VALUES (:utilityID, :hasColdWater, :hasHotWater)`,
+            [utilityID, hasColdWater, hasHotWater],
+            { autoCommit: true }
         );
 
         if (waterResult.rowsAffected === 0) {
@@ -279,7 +279,7 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
     return await withOracleDB(async (connection) => {
         let query = `SELECT UTILITY.utilityID, overallRating, UTILITY.buildingCode, imageURL, HOURS.operatingHour
                      FROM UTILITY
-                     LEFT JOIN HOURS ON UTILITY.buildingCode = HOURS.buildingCode`;
+                              LEFT JOIN HOURS ON UTILITY.buildingCode = HOURS.buildingCode`;
 
         if (wrClicked) {
             query += ` LEFT JOIN WASHROOM ON UTILITY.utilityID = WASHROOM.utilityID`;
@@ -310,7 +310,7 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
 async function findCafesAtBuilding(buildingCode) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-          `SELECT name, operatingHours, buildingCode
+            `SELECT name, operatingHours, buildingCode
             FROM CAFE c
             WHERE buildingCode = :buildingCode`,
             [buildingCode]
@@ -367,14 +367,14 @@ async function newUser(userID, username, email, password) {
 
 async function logIn(userID, password) {
     return await withOracleDB(async (connection) => {
-       const result = await connection.execute(
+        const result = await connection.execute(
             `SELECT * 
             FROM USERINFO
             WHERE userID = :userID AND password = :password`,
-           [userID, password]
-       );
+            [userID, password]
+        );
 
-       console.log(result);
+        console.log(result);
 
         if (result.rows.length === 0) {
             console.log("userID or password is wrong")
@@ -527,12 +527,87 @@ async function deleteReviews(reviewID, utilityID) {
             [reviewID, utilityID],
             { autoCommit: true }
         );
-        return result.rowsAffected > 0;
+        return result.rowsAffected && result.rowsAffected > 0;
     }).catch((error) => {
         console.error('Failed to delete a review:', error);
         return false;
     });
 }
+
+
+async function deleteAccount(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM UserInfo WHERE userID = :userID`,
+            [userID],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((error) => {
+        console.error('Failed to delete an Account:', error);
+        return false;
+    });
+}
+
+async function deleteRequest(requestID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM Request WHERE requestID = :requestID`,
+            [requestID],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((error) => {
+        console.error('Failed to delete a Request:', error);
+        return false;
+    });
+}
+
+async function updateUsername(userID, newName) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET username=:newName where userID=:userID`,
+            [newName, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+async function updateEmail(userID, newEmail) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET email=:newEmail where userID=:userID`,
+            [newEmail, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+async function updatePassword(userID, newPassword) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET password=:newPassword where userID=:userID`,
+            [newPassword, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
 
 
 
@@ -587,6 +662,10 @@ async function findBestRatedBuilding() {
 
 
 module.exports = {
+    updateEmail,
+    updatePassword,
+    updateUsername,
+    deleteAccount,
     testOracleConnection,
     fetchDemotableFromDb,
     updateNameDemotable,

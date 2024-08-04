@@ -49,9 +49,9 @@ router.post("/insert-demotable", async (req, res) => {
 });
 
 router.get("/util-with-numReviews", async (req, res) => {
-   const {minReviewNum} = req.query;
-   const result = await appService.utilsWithMinNumOfReviews(minReviewNum);
-   res.json({data: result});
+    const {minReviewNum} = req.query;
+    const result = await appService.utilsWithMinNumOfReviews(minReviewNum);
+    res.json({data: result});
 });
 
 router.get("/find-cafes-with-drink", async (req,res) => {
@@ -70,9 +70,9 @@ router.get("/find-cafes-with-drink", async (req,res) => {
 });
 
 router.get("/utils-at-building", async (req, res) => {
-   const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
-   const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
-   res.json({data: results});
+    const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
+    const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
+    res.json({data: results});
 
 });
 
@@ -104,8 +104,8 @@ router.get("/fetch-cafe-detail", async (req, res) => {
 });
 
 router.get("/all-cafes", async (req, res) => {
-   const result = await appService.fetchCafesListView()
-   res.json({data: result});
+    const result = await appService.fetchCafesListView()
+    res.json({data: result});
 });
 
 router.get("/best-rated-building", async (req, res) => {
@@ -115,9 +115,9 @@ router.get("/best-rated-building", async (req, res) => {
 
 
 router.get("/reviews", async (req, res) => {
-   const {utilityID} = req.query;
-   const reviews = await appService.fetchReviewsForUtil(utilityID);
-   res.json({data: reviews});
+    const {utilityID} = req.query;
+    const reviews = await appService.fetchReviewsForUtil(utilityID);
+    res.json({data: reviews});
 });
 
 router.get("/requested-utilities", async (req, res) => {
@@ -141,7 +141,7 @@ router.get("/detailed-util-info", async (req, res) => {
 router.post("/insert-waterfountain", async (req, res) => {
     const { utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater } = req.body;
     const insertResult = await appService.insertFountain
-        (utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater);
+    (utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -150,8 +150,8 @@ router.post("/insert-waterfountain", async (req, res) => {
 });
 
 router.post("/newUser", async(req, res) =>{
-   const {userID, username, email, password} = req.body;
-   const insertResult = await appService.newUser(userID, username, email, password);
+    const {userID, username, email, password} = req.body;
+    const insertResult = await appService.newUser(userID, username, email, password);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -163,7 +163,7 @@ router.post("/newUser", async(req, res) =>{
 router.post("/insert-washroom", async (req, res) => {
     const { utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures } = req.body;
     const insertResult = await appService.insertWashroom
-        (utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures);
+    (utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -175,7 +175,7 @@ router.post("/insert-washroom", async (req, res) => {
 router.post("/insert-microwave", async (req, res) => {
     const { utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize } = req.body;
     const insertResult = await appService.insertMicrowave
-        (utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize);
+    (utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -220,14 +220,67 @@ router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {
     }
 });
 
+router.delete("/delete-account/:userID", async (req, res) => {
+    const { userID } = req.params;
+    const deleteResult = await appService.deleteAccount(userID);
+    if (deleteResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 router.get("/cafe-at-building", async(req, res) => {
-   const {buildingCode} = req.query;
+    const {buildingCode} = req.query;
 
-   const result = await appService.findCafesAtBuilding(buildingCode);
-
-   res.json({data: result});
+    const result = await appService.findCafesAtBuilding(buildingCode);
+    res.json({data: result});
 
 });
+
+router.delete("/delete-request/:requestID", async (req, res) => {
+    const { requestID } = req.params;
+    const deleteResult = await appService.deleteRequest(requestID);
+    if (deleteResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/update-username", async (req, res) => {
+    const { userID, newName } = req.body;
+    const updateResult = await appService.updateUsername(userID, newName);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post("/update-email", async (req, res) => {
+    const { userID, newEmail } = req.body;
+    const updateResult = await appService.updateEmail(userID, newEmail);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post("/update-password", async (req, res) => {
+    const { userID, newPassword } = req.body;
+    const updateResult = await appService.updatePassword(userID, newPassword);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
 
 
 router.post("/update-name-demotable", async (req, res) => {
