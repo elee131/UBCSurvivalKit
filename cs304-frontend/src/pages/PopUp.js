@@ -44,7 +44,7 @@ function PopUp(props) {
   const util = props.util;
   return (
     <div>
-      <Popup trigger={<button> Click to open </button>} modal nested>
+      <Popup trigger={<button> View Details </button>} modal nested>
         {(close) => (
           <div className="modal">
             <div>

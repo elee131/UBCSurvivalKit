@@ -505,6 +505,21 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
 }
 
 
+async function deleteReviews(reviewID, utilityID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM Review WHERE reviewID = :reviewID AND utilityID = :utilityID`,
+            [reviewID, utilityID],
+            { autoCommit: true }
+        );
+        return result.rowsAffected > 0;
+    }).catch((error) => {
+        console.error('Failed to delete a review:', error);
+        return false;
+    });
+}
+
+
 
 async function updateNameDemotable(oldName, newName) {
     return await withOracleDB(async (connection) => {
@@ -529,6 +544,9 @@ async function countDemotable() {
     });
 }
 
+
+
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -543,6 +561,7 @@ module.exports = {
     detailedUtilInfo,
     fetchReviewsForUtil,
     findUtilsAtBuilding,
+    deleteReviews,
     utilsWithMinNumOfReviews,
     logIn,
     newUser,
