@@ -316,6 +316,8 @@ async function findCafesAtBuilding(buildingCode) {
             [buildingCode]
         );
 
+        console.log(result);
+
         return result.rows;
     }).catch(() => {
         return false;
@@ -640,16 +642,14 @@ async function findBestRatedBuilding() {
         const result = await connection.execute(
             `SELECT t.buildingCode, t.average
              FROM (
-                  SELECT b.buildingCode, AVG(u.overallRating) as average
-                  FROM Building b, Utility u 
-                  WHERE b.buildingCode=u.buildingCode
-                  GROUP BY b.buildingCode) t
-                  WHERE t.average in (SELECT MAX(s.average) 
-                                       FROM (
-                                       SELECT b2.buildingCode, AVG(u2.overallRating) as average
-                                       FROM Building b2, Utility u2 
-                                       WHERE b2.buildingCode=u2.buildingCode
-                                       GROUP BY b2.buildingCode)s)`
+                  SELECT buildingCode, AVG(overallRating) as average
+                  FROM Building NATURAL JOIN Utility 
+                  GROUP BY buildingCode) t
+             WHERE t.average in (SELECT MAX(s.average) 
+                                    FROM (
+                                           SELECT buildingCode, AVG(overallRating) as average
+                                           FROM Building NATURAL JOIN Utility
+                                           GROUP BY buildingCode)s)`
 
         );
 

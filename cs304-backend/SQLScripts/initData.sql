@@ -77,8 +77,8 @@ CREATE TABLE Request(
 
 CREATE TABLE Cafe(
     cafeID INTEGER PRIMARY KEY,
-    name CHAR(50),
-    operatingHours CHAR(100),
+    name VARCHAR(50),
+    operatingHours VARCHAR(100),
     buildingCode VARCHAR(10) NOT NULL,
     locationID INTEGER NOT NULL,
     FOREIGN KEY (locationID) REFERENCES Location,
@@ -354,7 +354,7 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000003, 5.0, 'NEST', '/images/NEST', 3);
+(30000003, 51.0, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
