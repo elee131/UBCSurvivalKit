@@ -1,3 +1,4 @@
+// source code from https://github.students.cs.ubc.ca/CPSC304/CPSC304_Node_Project
 const express = require('express');
 const appService = require('./appService');
 
@@ -97,6 +98,10 @@ router.post("/logIn", async (req, res) => {
         console.error('Login error:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
+});
+
+router.get("/fetch-cafe-detail", async (req, res) => {
+
 });
 
 
