@@ -681,6 +681,7 @@ module.exports = {
     fetchReviewsForUtil,
     findUtilsAtBuilding,
     deleteReviews,
+    deleteRequest,
     utilsWithMinNumOfReviews,
     logIn,
     newUser,
