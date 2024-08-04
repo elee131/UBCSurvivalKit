@@ -427,12 +427,33 @@ async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, 
     });
 }
 
+async function findCafesWithDrinks(selectedDrinks) {
+    let drinksList = selectedDrinks.map(drink => `'${drink}'`).join(', ');
+
+    const query = `
+        SELECT c.*
+        FROM Cafe c
+        WHERE NOT EXISTS (
+            (SELECT name FROM Drink WHERE name IN (${drinksList}))
+            MINUS
+            (SELECT s.drinkName 
+             FROM Serves s
+             WHERE s.cafeID = c.cafeID)
+        )
+    `;
+
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(query);
+        return result.rows;
+    }).catch(() => {
+        console.error("failed to find cafe:", error);
+        return [];
+    })
+}
+
+
 async function insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description) {
     return await withOracleDB(async (connection) => {
-
-        console.log('Attempting to insert review with values:', {
-            reviewID, utilityID, userID, cleanliness, functionality, accessibility, description
-        });
 
         const result = await connection.execute(
             `INSERT INTO Review
@@ -524,6 +545,7 @@ module.exports = {
     logIn,
     newUser,
     insertReview,
-    insertRequest
+    insertRequest,
+    findCafesWithDrinks
 
 };
