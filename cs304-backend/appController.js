@@ -138,6 +138,13 @@ router.get("/detailed-util-info", async (req, res) => {
     res.json({data: result} );
 });
 
+
+router.get("/average-rating", async (req, res) => {
+    const result = await appService.findAverageRating();
+    res.json({data: result} );
+});
+
+
 router.post("/insert-waterfountain", async (req, res) => {
     const { utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater } = req.body;
     const insertResult = await appService.insertFountain
