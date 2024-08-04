@@ -206,7 +206,58 @@ router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {
     }
 });
 
+router.delete("/delete-account/:userID", async (req, res) => {
+    const { userID } = req.params;
+    const deleteResult = await appService.deleteAccount(userID);
+    if (deleteResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
 
+
+router.delete("/delete-request/:requestID", async (req, res) => {
+    const { requestID } = req.params;
+    const deleteResult = await appService.deleteRequest(requestID);
+    if (deleteResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/update-username", async (req, res) => {
+    const { userID, newName } = req.body;
+    const updateResult = await appService.updateUsername(userID, newName);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post("/update-email", async (req, res) => {
+    const { userID, newEmail } = req.body;
+    const updateResult = await appService.updateEmail(userID, newEmail);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post("/update-password", async (req, res) => {
+    const { userID, newPassword } = req.body;
+    const updateResult = await appService.updatePassword(userID, newPassword);
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
 
 
 

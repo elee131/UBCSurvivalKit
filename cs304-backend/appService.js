@@ -509,12 +509,87 @@ async function deleteReviews(reviewID, utilityID) {
             [reviewID, utilityID],
             { autoCommit: true }
         );
-        return result.rowsAffected > 0;
+        return result.rowsAffected && result.rowsAffected > 0;
     }).catch((error) => {
         console.error('Failed to delete a review:', error);
         return false;
     });
 }
+
+
+async function deleteAccount(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM UserInfo WHERE userID = :userID`,
+            [userID],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((error) => {
+        console.error('Failed to delete an Account:', error);
+        return false;
+    });
+}
+
+async function deleteRequest(requestID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM Request WHERE requestID = :requestID`,
+            [requestID],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((error) => {
+        console.error('Failed to delete a Request:', error);
+        return false;
+    });
+}
+
+async function updateUsername(userID, newName) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET username=:newName where userID=:userID`,
+            [newName, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+async function updateEmail(userID, newEmail) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET email=:newEmail where userID=:userID`,
+            [newEmail, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+async function updatePassword(userID, newPassword) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE UserInfo SET password=:newPassword where userID=:userID`,
+            [newPassword, userID],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
 
 
 
@@ -545,6 +620,10 @@ async function countDemotable() {
 
 
 module.exports = {
+    updateEmail,
+    updatePassword,
+    updateUsername, 
+    deleteAccount,
     testOracleConnection,
     fetchDemotableFromDb,
     initiateDemotable,
