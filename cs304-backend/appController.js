@@ -220,22 +220,29 @@ router.post("/insert-request", async (req, res) => {
 router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {
     const { reviewID, utilityID } = req.params;
     const deleteResult = await appService.deleteReviews(reviewID, utilityID);
-    if (deleteResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
+    if (deleteResult.status === 'success') {
+                res.status(200).json({ success: true, message: deleteResult.message });
+            } else if (deleteResult.status === 'failure') {
+                res.status(404).json({ success: false, message: deleteResult.message });
+            } else {
+                res.status(500).json({ success: false, message: deleteResult.message });
+            }
+        });
+
+
 
 router.delete("/delete-account/:userID", async (req, res) => {
     const { userID } = req.params;
     const deleteResult = await appService.deleteAccount(userID);
-    if (deleteResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
+        if (deleteResult.status === 'success') {
+            res.status(200).json({ success: true, message: deleteResult.message });
+        } else if (deleteResult.status === 'failure') {
+            res.status(404).json({ success: false, message: deleteResult.message });
+        } else {
+            res.status(500).json({ success: false, message: deleteResult.message });
+        }
+    });
+
 
 router.get("/cafe-at-building", async(req, res) => {
     const {buildingCode} = req.query;
@@ -248,12 +255,16 @@ router.get("/cafe-at-building", async(req, res) => {
 router.delete("/delete-request/:requestID", async (req, res) => {
     const { requestID } = req.params;
     const deleteResult = await appService.deleteRequest(requestID);
-    if (deleteResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
+     if (deleteResult.status === 'success') {
+                res.status(200).json({ success: true, message: deleteResult.message });
+            } else if (deleteResult.status === 'failure') {
+                res.status(404).json({ success: false, message: deleteResult.message });
+            } else {
+                res.status(500).json({ success: false, message: deleteResult.message });
+            }
 });
+
+
 
 router.post("/update-username", async (req, res) => {
     const { userID, newName } = req.body;

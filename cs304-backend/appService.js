@@ -471,7 +471,6 @@ async function findCafesWithDrinks(selectedDrinks) {
     })
 }
 
-// jellow
 
 async function insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description) {
     return await withOracleDB(async (connection) => {
@@ -530,10 +529,14 @@ async function deleteReviews(reviewID, utilityID) {
             [reviewID, utilityID],
             { autoCommit: true }
         );
-        return result.rowsAffected && result.rowsAffected > 0;
+        if (result.rowsAffected && result.rowsAffected > 0) {
+                               return { status: 'success', message: 'Review was deleted successfully.' };
+                           } else {
+                               return { status: 'failure', message: 'No Reviews found with the provided utilityID and reviewID.' };
+                           }
     }).catch((error) => {
         console.error('Failed to delete a review:', error);
-        return false;
+         return { status: 'error', message: 'There was an error while deleting the review.' };
     });
 }
 
@@ -545,10 +548,15 @@ async function deleteAccount(userID) {
             [userID],
             { autoCommit: true }
         );
-        return result.rowsAffected && result.rowsAffected > 0;
+       if (result.rowsAffected && result.rowsAffected > 0) {
+                       return { status: 'success', message: 'Account was deleted successfully.' };
+                   } else {
+                       return { status: 'failure', message: 'No account found with the provided userID.' };
+                   }
+
     }).catch((error) => {
         console.error('Failed to delete an Account:', error);
-        return false;
+        return { status: 'error', message: 'There was an error while deleting the account.' };
     });
 }
 
@@ -559,10 +567,16 @@ async function deleteRequest(requestID) {
             [requestID],
             { autoCommit: true }
         );
-        return result.rowsAffected && result.rowsAffected > 0;
+         if (result.rowsAffected && result.rowsAffected > 0) {
+                               return { status: 'success', message: 'Request was deleted successfully.' };
+                           } else {
+                               return { status: 'failure', message: 'No request was found with the provided requestID.' };
+                           }
+
+
     }).catch((error) => {
         console.error('Failed to delete a Request:', error);
-        return false;
+        return { status: 'error', message: 'There was an error while deleting the account.' };
     });
 }
 
