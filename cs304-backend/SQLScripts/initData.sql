@@ -58,6 +58,7 @@ CREATE TABLE UserInfo(
     username VARCHAR(20) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(20) NOT NULL
+    isAdmin VARCHAR(5)
 );
 
 CREATE TABLE Request(
@@ -145,25 +146,25 @@ CREATE TABLE Review(
 
 
 
-INSERT INTO UserInfo (userID, username, email, password)
+INSERT INTO UserInfo (userID, username, email, password, isAdmin)
 VALUES
-(0, 'defaultUser', 'd@email.com', 'password');
+(0, 'defaultUser', 'd@email.com', 'password', 'true');
 
-INSERT INTO UserInfo (userID, username, email, password)
+INSERT INTO UserInfo (userID, username, email, password, isAdmin)
 VALUES
-(1, 'Kyle', 'k@email.com', 'password');
+(1, 'Kyle', 'k@email.com', 'password', 'true');
 
-INSERT INTO UserInfo (userID, username, email, password)
+INSERT INTO UserInfo (userID, username, email, password, isAdmin)
 VALUES
-(2, 'Sarah', 's@email.com', 'password');
+(2, 'Sarah', 's@email.com', 'password', 'false');
 
-INSERT INTO UserInfo (userID, username, email, password)
+INSERT INTO UserInfo (userID, username, email, password, isAdmin)
 VALUES
-(3, 'Maddie', 'm@email.com', 'password');
+(3, 'Maddie', 'm@email.com', 'password', 'false');
 
-INSERT INTO UserInfo (userID, username, email, password)
+INSERT INTO UserInfo (userID, username, email, password, isAdmin)
 VALUES
-(4, 'Joey', 'j@email.com', 'password');
+(4, 'Joey', 'j@email.com', 'password', null);
 
 
 INSERT INTO Image(url, description)
