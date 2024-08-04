@@ -57,12 +57,14 @@ function App() {
   const [showWash, setShowWash] = useState(false);
   const [showWater, setShowWater] = useState(false);
   const [showMicro, setShowMicro] = useState(false);
+  const [buildingCode, setBuildingCode] = useState("");
   return (
     <div>
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
       <label>
+        Washrooms
         <input
           type="checkbox"
           checked={showWash}
@@ -70,9 +72,9 @@ function App() {
             setShowWash(!showWash);
           }}
         />
-        Washrooms
       </label>
       <label>
+        | Water Fountains
         <input
           type="checkbox"
           checked={showWater}
@@ -80,9 +82,9 @@ function App() {
             setShowWater(!showWater);
           }}
         />
-        Water Fountains
       </label>
       <label>
+        | Microwaves
         <input
           type="checkbox"
           checked={showMicro}
@@ -90,9 +92,24 @@ function App() {
             setShowMicro(!showMicro);
           }}
         />
-        Microwaves
+      </label>
+      <label>
+        | Building:
+        <input
+          type="text"
+          value={buildingCode}
+          onChange={(e) => {
+            setBuildingCode(e.target.value);
+          }}
+        />
       </label>
       {testUtils.map((util) => {
+        if (
+          buildingCode !== "" &&
+          buildingCode.toLowerCase() !== util.building
+        ) {
+          return null;
+        }
         if (util.type === "washroom" && showWash) {
           return <Util util={util} />;
         }
