@@ -31,6 +31,7 @@ router.get('/waterfountain', async (req, res) => {
     res.json({data: tableContent});
 });
 
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {
@@ -48,6 +49,43 @@ router.post("/insert-demotable", async (req, res) => {
     } else {
         res.status(500).json({ success: false });
     }
+});
+
+router.get("/util-with-numReviews", async (req, res) => {
+   const {minReviewNum} = req.query;
+   const result = await appService.utilsWithMinNumOfReviews(minReviewNum);
+   res.json({data: result});
+});
+
+router.get("/utils-at-building", async (req, res) => {
+   const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
+   const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
+   res.json({data: results});
+
+});
+
+router.get("/reviews", async (req, res) => {
+   const {utilityID} = req.query;
+   const reviews = await appService.fetchReviewsForUtil(utilityID);
+   res.json({data: reviews});
+});
+
+router.get("/requested-utilities", async (req, res) => {
+    const { wrClicked, mClicked, wfClicked } = req.query;
+    const tableContent = await appService.fetchRequestedUtils(wrClicked, mClicked, wfClicked );
+    res.json({data: tableContent});
+});
+
+router.get("/requested-utilities-simple", async (req, res) => {
+    const { wrClicked, mClicked, wfClicked } = req.query;
+    const tableContent = await appService.fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked );
+    res.json({data: tableContent});
+});
+
+router.get("/detailed-util-info", async (req, res) => {
+    const { utilityID } = req.query;
+    const result = await appService.detailedUtilInfo(utilityID);
+    res.json({data: result} );
 });
 
 router.post("/insert-waterfountain", async (req, res) => {
