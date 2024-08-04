@@ -1,4 +1,3 @@
-// source code from https://github.students.cs.ubc.ca/CPSC304/CPSC304_Node_Project
 const express = require('express');
 const appService = require('./appService');
 
@@ -8,6 +7,10 @@ const router = express.Router();
 // API endpoints
 // Modify or extend these routes based on your project's needs.
 
+//router.get('/', function (req, res) {
+//  console.log("in get slash")
+//  res.send("HII");
+//});
 
 router.get('/check-db-connection', async (req, res) => {
     const isConnect = await appService.testOracleConnection();
@@ -95,23 +98,6 @@ router.post("/logIn", async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
-
-router.get("/fetch-cafe-detail", async (req, res) => {
-    const {cafeID} = req.query;
-
-    const result = await appService.fetchCafeDetails(cafeID);
-    res.json({data: result});
-});
-
-router.get("/all-cafes", async (req, res) => {
-   const result = await appService.fetchCafesListView()
-   res.json({data: result});
-});
-
-router.get("/best-rated-building", async (req, res) => {
-    const result = await appService.findBestRatedBuilding();
-    res.json({data:result});
-})
 
 
 router.get("/reviews", async (req, res) => {
@@ -229,13 +215,7 @@ router.delete("/delete-account/:userID", async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-router.get("/cafe-at-building", async(req, res) => {
-   const {buildingCode} = req.query;
 
-   const result = await appService.findCafesAtBuilding(buildingCode);
-   res.json({data: result});
-
-});
 
 router.delete("/delete-request/:requestID", async (req, res) => {
     const { requestID } = req.params;
