@@ -22,13 +22,17 @@ function Request(prop) {
     );
     return null;
   }
+  function rejectRequest() {
+    alert("Send api call to remove this request");
+    return null;
+  }
   return (
     <div className="Request">
       <p>Building: {request.building}</p>
       <p> Util type: {request.util} </p>
       <p> Description: {request.desc} </p>
-      {/* TODO: generate the id */}
       <button onClick={addRequest}> Accept Request </button>
+      <button onClick={rejectRequest}> Deny Request </button>
     </div>
   );
 }

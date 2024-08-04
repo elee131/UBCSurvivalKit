@@ -1,6 +1,32 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Style.css";
+import PopUp from "./PopUp";
+
+const testUtil = {
+  utilID: 1777077,
+  building: "ICCCS",
+  location: "Top floor beside room 350",
+  overallRating: 4.8,
+  recommended: true,
+  cleanliness: 5.0,
+  accessible: 3.9,
+  functional: 4.8,
+  reviews: [
+    {
+      rating: 4.8,
+      description: "it was alright",
+    },
+    {
+      rating: 3.4,
+      description: "found a rat in the bowl",
+    },
+    {
+      rating: 5.0,
+      description: "someone gave me $500 cash when i entered",
+    },
+  ],
+};
 
 const testUtils = [
   {
@@ -49,6 +75,11 @@ function Util(prop) {
       <p>
         Located: {util.building} {util.location}
       </p>
+      <label>
+        The popup is just a placeholder
+        <PopUp util={testUtil} />
+      </label>
+      <p>------------</p>
     </div>
   );
 }
