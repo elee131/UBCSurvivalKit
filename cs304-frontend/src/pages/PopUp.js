@@ -7,9 +7,7 @@ function MakeReview(props) {
   const [description, setDescription] = useState("");
 
   const makeReview = async (utilityID, userID) => {
-    try {
 
-    }
   }
 
   return (
