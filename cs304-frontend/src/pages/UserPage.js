@@ -1,39 +1,6 @@
 import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 
-const testReviews = [
-  {
-    utilID: 1,
-    reviewID: 1,
-    rating: 5,
-    description: "Great",
-  },
-  {
-    utilID: 1,
-    reviewID: 2,
-    rating: 5,
-    description: "Changed my life :D",
-  },
-  {
-    utilID: 2,
-    reviewID: 8,
-    rating: 2,
-    description: "Ate my phone :(",
-  },
-  {
-    utilID: 3,
-    reviewID: 4,
-    rating: 4,
-    description: "Craig was there.",
-  },
-  {
-    utilID: 4,
-    reviewID: 9,
-    rating: 1,
-    description: "Made me look for its 8 pages",
-  },
-];
-
 function App() {
   const [userID, setUserID] = useState(0);
   const [email, setEmail] = useState("");
@@ -201,7 +168,7 @@ function App() {
           <button onClick={handlePasswordChange}>Submit</button>
         </label>
       </div>
-      {testReviews.map((review) => (
+      {reviews.map((review) => (
         <div key={review.reviewID}>
           <p>Review for util: {review.utilID}</p>
           <p>Rating: {review.rating}</p>
