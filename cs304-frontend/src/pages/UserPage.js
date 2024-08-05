@@ -12,7 +12,6 @@ function App() {
 
 
 
-  useEffect(() => {
       const fetchReviews = async () => {
         if (userID === undefined) return;
 
@@ -24,13 +23,15 @@ function App() {
           }
 
           const result = await response.json();
-          const data = result.data.map(([utilID, reviewID, , rating, , , description]) => ({
-            utilID,
-            reviewID,
-            rating,
-            description,
-          }));
-
+             const data = result.data.map(([reviewID, utilityID, userID, cleanliness, functionality, accessibility, description]) => ({
+              reviewID,
+              utilityID,
+              userID,
+              cleanliness,
+              functionality,
+              accessibility,
+              description,
+            }));
           setReviews(data);
           console.log(data);
         } catch (error) {
@@ -67,10 +68,11 @@ function App() {
               }
             };
 
+
+  useEffect(() => {
       fetchReviews();
       fetchRequests();
     }, [userID]);
-
 
 
 
@@ -161,6 +163,30 @@ function App() {
     setPassword("");
   };
 
+
+    const deleteReviews = async(reviewID, utilityID) => {
+
+    try {
+          console.log(reviewID, utilityID);
+          const response = await fetch(`/delete-review/${reviewID}/${utilityID}`, {
+            method: 'DELETE',
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            await fetchReviews();
+            alert(result.message);
+          } else {
+            alert(result.message);
+          }
+        } catch (error) {
+          console.error('Error deleting review:', error);
+          alert('Error deleting review');
+        }
+      };
+
+
+
   return (
     <div>
       <div className="Navbar">
@@ -201,14 +227,14 @@ function App() {
       </div>
       {reviews.map((review) => (
         <div key={review.reviewID}>
-          <p>Review for util: {review.utilID}</p>
-          <p>Rating: {review.rating}</p>
+          <p>Review for util: {review.utilityID}</p>
+          <p>Cleanliness: {review.cleanliness}</p>
+          <p>Functionality: {review.functionality}</p>
+          <p>Accessibility: {review.accessibility}</p>
           <p>Description: {review.description}</p>
           <button
             onClick={() => {
-              alert(
-                `Deleting review with util ID: ${review.utilID}; and review ID: ${review.reviewID}`
-              );
+              deleteReviews(review.reviewID, review.utilityID)
             }}
           >
             Delete Review

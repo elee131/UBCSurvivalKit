@@ -664,6 +664,7 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
 
 async function deleteReviews(reviewID, utilityID) {
     return await withOracleDB(async (connection) => {
+        console.log(reviewID, utilityID);
         const result = await connection.execute(
             `DELETE FROM Review WHERE reviewID = :reviewID AND utilityID = :utilityID`,
             [reviewID, utilityID],
