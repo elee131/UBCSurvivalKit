@@ -62,6 +62,8 @@ function App() {
            } catch (error) {
              alert("Internal server error");
              }
+
+             setEmail("");
       };
 
 
@@ -84,6 +86,8 @@ function App() {
               } catch (error) {
                 alert("Internal server error");
               }
+
+              setUsername("");
             };
 
 
@@ -106,6 +110,8 @@ function App() {
                           } catch (error) {
                             alert("Internal server error");
                           }
+
+                           setPassword("");
                         };
 
 
