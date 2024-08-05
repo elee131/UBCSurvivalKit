@@ -65,9 +65,11 @@ router.get("/find-cafes-with-drink", async (req,res) => {
     }
 
     const result = await appService.findCafesWithDrinks(selectedDrinks);
-    res.json({data: result});
+    handleQueryResult(result, res);
 
 });
+
+
 
 router.get("/utils-at-building", async (req, res) => {
     const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
@@ -110,7 +112,8 @@ router.get("/all-cafes", async (req, res) => {
 
 router.get("/best-rated-building", async (req, res) => {
     const result = await appService.findBestRatedBuilding();
-    res.json({data:result});
+
+    handleQueryResult(result, res);
 })
 
 
@@ -146,48 +149,98 @@ router.get("/average-rating", async (req, res) => {
 
 
 router.post("/insert-waterfountain", async (req, res) => {
-    const { utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater } = req.body;
+    const newUtilID = await appService.findMaxUtilityID('WATERFOUNTAIN');
+
+    if (newUtilID === undefined || newUtilID === null) {
+        return res.status(400).json({ success: false, message: "Failed to find suitable utilID" });
+    }
+
+    const { overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater } = req.body;
     const insertResult = await appService.insertFountain
-    (utilityID, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater);
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
+    (newUtilID + 1, overallRating, buildingCode, imageURL,locationID, hasColdWater, hasHotWater);
+
+    handleInsertResult(insertResult, res);
 });
 
-router.post("/newUser", async(req, res) =>{
-    const {userID, username, email, password} = req.body;
-    const insertResult = await appService.newUser(userID, username, email, password);
-    if (insertResult) {
-        res.json({ success: true });
+router.post("/new-user", async(req, res) =>{
+    const { username, email, password, isAdmin} = req.body;
+    const currMaxUserID = await appService.findMaxUserID();
+    let newUID;
+
+    if (currMaxUserID === null || currMaxUserID === undefined) {
+        res.status(400).json({ status: false, message: "failed to find suitable UID" });
     } else {
-        res.status(500).json({ success: false });
+        newUID = currMaxUserID + 1;
     }
+    const insertResult = await appService.newUser(newUID, username, email, password, isAdmin);
+
+    handleInsertResult(insertResult, res)
 
 });
 
+function handleInsertResult(insertResult, res) {
+    if (insertResult.status === 'success') {
+        res.status(200).json({success: true, message: insertResult.message});
+    } else if (insertResult.status === 'failure') {
+        res.status(400).json({success: false, message: insertResult.message});
+    } else {
+        res.status(500).json({success: false, message: insertResult.message});
+    }
+}
+
+function handleQueryResult(queryResult, res) {
+    if (queryResult.status === 'success') {
+        res.status(200).json({success: true, data: queryResult.data, message: queryResult.message});
+    } else if (queryResult.status === 'failure') {
+        res.status(400).json({success: false, message: queryResult.message});
+    } else {
+        res.status(500).json({success: false, message: queryResult.message});
+    }
+}
+
+
+router.post("/insert-cafe", async (req, res) => {
+
+    const { name, operatingHours, buildingCode, locationID } = req.body;
+    const currMaxCafeID = await appService.findMaxCafeID();
+
+    if (currMaxCafeID === undefined || currMaxCafeID === null) {
+        return res.status(400).json({ status: false, message: "Failed to find suitable UID" });
+    }
+
+    const insertResult = await appService.insertCafe(currMaxCafeID + 1, name, operatingHours, buildingCode, locationID);
+    handleInsertResult(insertResult, res);
+
+});
 router.post("/insert-washroom", async (req, res) => {
-    const { utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures } = req.body;
-    const insertResult = await appService.insertWashroom
-    (utilityID, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures);
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+    const newUtilID = await appService.findMaxUtilityID('WASHROOM');
+
+    if (newUtilID === undefined || newUtilID === null) {
+        return res.status(400).json({ success: false, message: "Failed to find suitable utilID" });
     }
+
+    const { overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures } = req.body;
+    const insertResult = await appService.insertWashroom
+    (newUtilID + 1, overallRating, buildingCode, imageURL,locationID, gender, numStalls, accessibilityFeatures);
+
+    handleInsertResult(insertResult, res);
+
 });
 
 
 router.post("/insert-microwave", async (req, res) => {
-    const { utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize } = req.body;
-    const insertResult = await appService.insertMicrowave
-    (utilityID, overallRating, buildingCode, imageURL,locationID, microwaveSize);
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+    const newUtilID = await appService.findMaxUtilityID('MICROWAVE');
+
+    if (newUtilID === undefined || newUtilID === null) {
+        return res.status(400).json({ success: false, message: "Failed to find suitable utilID" });
     }
+
+    const {  overallRating, buildingCode, imageURL,locationID, microwaveSize } = req.body;
+    const insertResult = await appService.insertMicrowave
+    (newUtilID + 1, overallRating, buildingCode, imageURL,locationID, microwaveSize);
+
+    handleInsertResult(insertResult, res);
+
 });
 
 router.post("/insert-review", async (req, res) => {

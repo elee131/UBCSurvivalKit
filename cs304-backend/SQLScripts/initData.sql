@@ -57,7 +57,7 @@ CREATE TABLE UserInfo(
     userID INTEGER PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(20) NOT NULL
+    password VARCHAR(20) NOT NULL,
     isAdmin VARCHAR(5)
 );
 

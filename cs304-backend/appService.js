@@ -346,24 +346,24 @@ async function utilsWithMinNumOfReviews(minReviewNum) {
     });
 }
 
-async function newUser(userID, username, email, password) {
+async function newUser(userID, username, email, password, isAdmin) {
     return await withOracleDB(async (connection) => {
 
         const result = await connection.execute(
-            `INSERT INTO USERINFO (userID, username, email, password)
-            VALUES (:userID, :username, :email, :password)`,
-            [userID, username, email, password],
+            `INSERT INTO USERINFO (userID, username, email, password, isAdmin)
+            VALUES (:userID, :username, :email, :password, :isAdmin)`,
+            [userID, username, email, password, isAdmin],
 
             { autoCommit: true }
         );
 
         if (result.rowsAffected === 0) {
-            throw new Error('Failed to insert into USERINFO table');
+            return {status: 'failure', message:'Failed to create user with given information.'};
         }
-        return true;
+        return {status: 'success', message: 'New user account created successfully.'};
 
     }).catch(() => {
-        return false;
+        return {status: 'false', message: 'Had error while inserting user:', error };
     });
 }
 
@@ -419,6 +419,69 @@ async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL,
     });
 }
 
+async function findMaxUtilityID(tableName) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(utilityID) as maxID
+            FROM ${tableName}`
+        );
+        return result.rows[0][0];
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max utilityID");
+    });
+}
+
+async function findMaxCafeID() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(cafeID) as maxID
+            FROM CAFE`
+        );
+        return result.rows[0][0];
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max cafeID");
+    });
+}
+
+async function findMaxUserID() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(userID) as maxID
+            FROM USERINFO`
+        );
+        console.log(result);
+        const maxID = result.rows[0][0];
+        return maxID;
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max cafeID");
+    });
+}
+
+async function insertCafe(cafeID, name, operatingHours, buildingCode, locationID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+          `INSERT INTO CAFE
+           VALUES (:cafeID, :name, :operatingHours, :buildingCode, :locationID)`,
+           [cafeID, name, operatingHours, buildingCode, locationID] ,
+
+            {autoCommit: true}
+        );
+
+        if (result.rowsAffected === 0) {
+            return {success: "failure", message: "Failed to insert new cafe."};
+        }
+        return {status: "success", message: "Successfully inserted the cafe."};
+
+
+    }).catch((error) => {
+        return {status: "failure", message: "There was an error while inserting into the Cafe:", error};
+
+    })
+}
+
 async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, locationID, gender, numStalls, accessibilityFeature) {
     return await withOracleDB(async (connection) => {
 
@@ -437,13 +500,13 @@ async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, 
         );
 
         if (washroomResult.rowsAffected === 0) {
-            throw new Error('Failed to insert into MICROWAVE table');
+            return {status: "failure", message: "Failed to insert new washroom."};
         }
+        return {status: "success", message: "Successfully inserted the washroom table."};
 
-        return true;
 
-    }).catch(() => {
-        return false;
+    }).catch((error) => {
+        return {status: "error", message: "There was an error while inserting into washroom:", error};
     });
 }
 
@@ -464,10 +527,11 @@ async function findCafesWithDrinks(selectedDrinks) {
 
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(query);
-        return result.rows;
+        return {status: 'success', data: result.rows, message: "successfully got cafe with drinks!"};
     }).catch(() => {
-        console.error("failed to find cafe:", error);
-        return [];
+        console.error("There was an error while trying to find Cafes.");
+        return {status: 'failure', data: [], message: "something went wrong when finding cafe."};
+
     })
 }
 
@@ -485,13 +549,13 @@ async function insertReview(reviewID, utilityID, userID, cleanliness, functional
         );
 
         if (result.rowsAffected === 0) {
-            throw new Error('Failed to insert into REVIEW table');
+            return {status: "failure", message: "Failed to insert new review."};
         }
+        return {status: "success", message: "Successfully inserted the review table."};
 
-        return true;
-    }).catch((error) => {
-        console.error('Insert review error:', error);
-        return false;
+
+    }).catch(() => {
+        return {status: "error", message: "There was an error while inserting into review."};
     });
 }
 
@@ -667,10 +731,12 @@ async function findBestRatedBuilding() {
 
         );
 
-        return result.rows;
+        return {status: 'success', data: result.rows, message: "successfully found best building."};
+
 
     }).catch( () => {
-        console.log("failed the query");
+        console.log("something went wrong while finding best rated building.");
+        return {status: 'error', data: [], message: "Something went wrong when finding best building." };
     })
 }
 
@@ -727,7 +793,9 @@ module.exports = {
     fetchCafesListView,
     fetchCafeDetails,
     findBestRatedBuilding,
-    findCafesAtBuilding
-
-
+    findCafesAtBuilding,
+    findMaxCafeID,
+    findMaxUtilityID,
+    findMaxUserID,
+    insertCafe
 };
