@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Style.css";
+import "./Utilities.css"
 import PopUp from "./PopUp";
 
 const testUtil = {
@@ -69,7 +70,7 @@ const testUtils = [
 function Util(prop) {
   const util = prop.util;
   return (
-    <div>
+    <div className = "review">
       <p>Type: {util.type}</p>
       <p>Rating: {util.rating}</p>
       <p>
@@ -79,7 +80,6 @@ function Util(prop) {
         The popup is just a placeholder
         <PopUp util={testUtil} />
       </label>
-      <p>------------</p>
     </div>
   );
 }
@@ -90,7 +90,7 @@ function App() {
   const [showMicro, setShowMicro] = useState(false);
   const [buildingCode, setBuildingCode] = useState("");
   return (
-    <div>
+    <div className = "container">
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
@@ -134,6 +134,8 @@ function App() {
           }}
         />
       </label>
+
+      <div className = "review-container">
       {testUtils.map((util) => {
         if (
           buildingCode !== "" &&
@@ -152,6 +154,7 @@ function App() {
         }
         return null;
       })}
+      </div>
     </div>
   );
 }
