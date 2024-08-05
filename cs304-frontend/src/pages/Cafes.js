@@ -61,7 +61,6 @@ function Cafe(prop) {
       </p>
       <label>The popup is just a placeholder</label>
       <CafePopUp cafe={testCafe} />
-      <p>------------</p>
     </div>
   );
 }
