@@ -94,6 +94,10 @@ async function fetchRequestedUtils(wrClicked, mClicked, wfClicked) {
     return await withOracleDB(async (connection) => {
         let results = [];
 
+        wrClicked = (wrClicked || '').toUpperCase() === 'TRUE';
+        mClicked = (mClicked || '').toUpperCase() === 'TRUE';
+        wfClicked = (wfClicked || '').toUpperCase() === 'TRUE';
+
         if (wrClicked) {
             const result = await connection.execute(
                 `SELECT utilityID, overallRating, buildingCode, imageURL, operatingHour
@@ -118,7 +122,7 @@ async function fetchRequestedUtils(wrClicked, mClicked, wfClicked) {
             results = results.concat(result.rows);
         }
 
-        return {status: 'success', data: result.rows, message: "successfully got query result"};;
+        return {status: 'success', data: results, message: "successfully got query result"};;
 
     }).catch((error) => {
         console.error("Database query failed: ", error);
@@ -131,6 +135,10 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
     return await withOracleDB(async (connection) => {
         let results = [];
 
+        wrClicked = (wrClicked || '').toUpperCase() === 'TRUE';
+        mClicked = (mClicked || '').toUpperCase() === 'TRUE';
+        wfClicked = (wfClicked || '').toUpperCase() === 'TRUE';
+
         if (wrClicked) {
             const result = await connection.execute(
                 `SELECT utilityID, buildingCode, operatingHour
@@ -142,7 +150,7 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
         if (mClicked) {
             const result = await connection.execute(
                 `SELECT utilityID, buildingCode, operatingHour
-                FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+                 FROM MICROWAVE NATURAL JOIN UTILITY NATURAL JOIN HOURS` // Adjusted query
             );
             results = results.concat(result.rows);
         }
@@ -150,13 +158,12 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
         if (wfClicked) {
             const result = await connection.execute(
                 `SELECT utilityID, buildingCode, operatingHour
-               FROM WASHROOM NATURAL JOIN UTILITY NATURAL JOIN HOURS`
+                 FROM WATERFOUNTAIN NATURAL JOIN UTILITY NATURAL JOIN HOURS` // Adjusted query
             );
             results = results.concat(result.rows);
         }
 
-        return {status: 'success', data: result.rows, message: "successfully got query result."};;
-
+        return {status: 'success', data: results, message: "successfully got query result."};
     }).catch((error) => {
         console.error("Database query failed: ", error);
         return {status: 'error', data: [], message: "The query failed with the error:", error};
@@ -343,7 +350,7 @@ async function utilsWithMinNumOfReviews(minReviewNum) {
                 [minReviewNum]
             );
 
-            return {status: 'successful', data: result.rows, message: "Successfully executed query."};
+            return {status: 'success', data: result.rows, message: "Successfully executed query."};
         } catch (error) {
             console.error("Error executing query:", error);
             return {status: 'error', data: [], message: "Query failed with error:", error};
@@ -372,19 +379,19 @@ async function newUser(userID, username, email, password, isAdmin) {
     });
 }
 
-async function logIn(userID, password) {
+async function logIn(email, password) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT * 
             FROM USERINFO
-            WHERE userID = :userID AND password = :password`,
-            [userID, password]
+            WHERE email = :email AND password = :password`,
+            [email, password]
         );
 
         console.log(result);
 
         if (result.rows.length === 0) {
-            console.log("userID or password is wrong")
+            console.log("email or password is wrong")
             return false;
         }
 
@@ -445,6 +452,21 @@ async function findMaxCafeID() {
             FROM CAFE`
         );
         return result.rows[0][0];
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max cafeID");
+    });
+}
+
+async function findMaxRequestID() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(requestID) as requestID
+            FROM REQUEST`
+        );
+        console.log(result);
+        const maxID = result.rows[0][0];
+        return maxID;
     }).catch((error) => {
         console.error(error);
         throw new Error("Failed to find max cafeID");
@@ -573,7 +595,7 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
                 (requestID, requestDate, status, requestDescription, 
                  requestType, amenityType, buildingName, userID, imageURL)
                 VALUES 
-                    (:requestID, :requestDate, :status, 
+                    (:requestID, TO_DATE(:requestDate, 'YYYY-MM-DD'), :status, 
                      :requestDescription, :requestType, :amenityType, :buildingName, :userID, :imageURL)`,
             [requestID, requestDate, status, requestDescription, requestType,
                 amenityType, buildingName, userID, imageURL],
@@ -795,5 +817,6 @@ module.exports = {
     findMaxCafeID,
     findMaxUtilityID,
     findMaxUserID,
-    insertCafe
+    insertCafe,
+    findMaxRequestID
 };

@@ -539,7 +539,6 @@ VALUES
     (5, 20000001, 4, 4, 4, 4, 'GREAT!');
 
 
-
 INSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)
 VALUES

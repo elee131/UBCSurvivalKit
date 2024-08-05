@@ -53,14 +53,14 @@ router.get("/utils-at-building", async (req, res) => {
 
 });
 
-router.post("/logIn", async (req, res) => {
+router.post("/log-in", async (req, res) => {
     try {
-        const { userID, password } = req.body;
+        const { email, password } = req.body;
 
-        if (userID === undefined || password === undefined || password === '') {
+        if (email === undefined || password === undefined || password === '') {
             return res.status(400).json({ success: false, message: 'Missing userID or password' });
         }
-        const result = await appService.logIn(userID, password);
+        const result = await appService.logIn(email, password);
 
         if (result) {
             res.json({ success: true });
@@ -230,10 +230,15 @@ router.post("/insert-review", async (req, res) => {
 });
 
 router.post("/insert-request", async (req, res) => {
-    const { requestID, requestDate, status, requestDescription, requestType, amenityType,
+    const { requestDate, status, requestDescription, requestType, amenityType,
         buildingName, userID,imageURL } = req.body;
-// handle date
-    const insertResult = await appService.insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
+    const currMaxRequestID = await appService.findMaxRequestID();
+
+    if (currMaxRequestID === undefined || currMaxRequestID === null) {
+        return res.status(400).json({ status: false, message: "Failed to find suitable UID" });
+    }
+
+    const insertResult = await appService.insertRequest(currMaxRequestID + 1, requestDate, status, requestDescription, requestType, amenityType,
         buildingName, userID,imageURL);
     handleInsertResult(insertResult, res);
 })
