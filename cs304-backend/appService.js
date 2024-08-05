@@ -239,6 +239,7 @@ async function fetchRequestsForUser(userID) {
             FROM Request r
             WHERE r.userID = :userID`,
             [userID]
+
         );
         return {status: 'success', data: result.rows, message:"Query successfully executed."};
 

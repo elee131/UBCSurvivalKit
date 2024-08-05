@@ -178,6 +178,8 @@ function handleInsertResult(insertResult, res) {
     } else {
         res.status(500).json({success: false, message: insertResult.message});
     }
+
+    res.setHeader('Content-Type', 'application/json');
 }
 
 function handleQueryResult(queryResult, res) {
@@ -188,6 +190,8 @@ function handleQueryResult(queryResult, res) {
     } else {
         res.status(500).json({success: false, message: queryResult.message});
     }
+
+    res.setHeader('Content-Type', 'application/json');
 }
 
 

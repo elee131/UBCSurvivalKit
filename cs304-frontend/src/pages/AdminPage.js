@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import Popup from "reactjs-popup";
 import "./Style.css";
+import { useState } from "react";
 
 const testList = [
   {
@@ -13,6 +15,66 @@ const testList = [
     desc: "mmm water",
   },
 ];
+
+function UtilPopUp(props) {
+  const request = props.request;
+  const [building, setBuilding] = useState(request.building);
+  const [location, setLocation] = useState("");
+  const [util, setUtil] = useState(request.util);
+  const [desc, setDesc] = useState(request.desc);
+  return (
+    <div>
+      <Popup trigger={<button> Accept Request </button>} modal nested>
+        {(close) => (
+          <div className="modal">
+            <input
+              type="text"
+              value={request.building}
+              placeholder="Building Code"
+              onChange={(e) => {
+                setBuilding(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              value=""
+              placeholder="Location"
+              onChange={(e) => {
+                setLocation(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              value={request.util}
+              placeholder="type"
+              onChange={(e) => {
+                setUtil(e.target.value);
+              }}
+            />
+            <textarea
+              value={request.desc}
+              placeholder="Description"
+              onChange={(e) => {
+                setDesc(e.target.value);
+              }}
+              rows={4}
+              columns={20}
+            />
+            <button
+              onClick={() => {
+                alert(
+                  `Building: ${building}; Location: ${location}; type: ${util}; desc: ${desc}`
+                );
+              }}
+            >
+              Add
+            </button>
+          </div>
+        )}
+      </Popup>
+    </div>
+  );
+}
 
 function Request(prop) {
   const request = prop.request;
@@ -31,7 +93,7 @@ function Request(prop) {
       <p>Building: {request.building}</p>
       <p> Util type: {request.util} </p>
       <p> Description: {request.desc} </p>
-      <button onClick={addRequest}> Accept Request </button>
+      <UtilPopUp request={request} />
       <button onClick={rejectRequest}> Deny Request </button>
     </div>
   );

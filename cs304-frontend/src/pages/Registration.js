@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
+import { setCookie, getCookie } from "./CookieHelper";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -32,7 +33,7 @@ function App() {
           <div>
             <div className="Login-submit">
               <button
-                onClick={() =>
+                onClick={() => {
                   alert(
                     "username: " +
                       username +
@@ -40,8 +41,11 @@ function App() {
                       email +
                       "\npassword: " +
                       password
-                  )
-                }
+                  );
+                  setCookie("username", username);
+                  setCookie("email", email);
+                  setCookie("password", password);
+                }}
               >
                 Register
               </button>
