@@ -35,19 +35,66 @@ const testReviews = [
 ];
 
 function App() {
+  const [userID, setUserID] = useState(0);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+
+
+  const handleEmailChange = async () => {
+        try {
+          const response = await fetch("/update-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userID, newEmail: email }),
+          });
+
+          const data = await response.json();
+          setResponseMessage(data.message);
+
+          if (data.status == "success") {
+            alert("Email updated successfully");
+          } else {
+            alert("Failed to update email: " + data.message);
+          }
+        } catch (error) {
+          alert("Internal server error");
+        }
+      };
+
+
+      const handleUsernameChange = async () => {
+              try {
+                const response = await fetch("/update-username", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ userID, newUsername: username }),
+                });
+
+                const data = await response.json();
+                setResponseMessage(data.message);
+
+                if (data.status == "success") {
+                  alert("Email updated successfully");
+                } else {
+                  alert("Failed to update username: " + data.message);
+                }
+              } catch (error) {
+                alert("Internal server error");
+              }
+            };
+
+
   return (
     <div>
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
-      <p>
-        Until I figure out how to determine which user is currently viewing the
-        page this won't be able to do much for now, probably gonna use cookies
-        tho
-      </p>
       <div>
         <label>
           Change email:
@@ -58,13 +105,7 @@ function App() {
               setEmail(e.target.value);
             }}
           />
-          <button
-            onClick={() => {
-              alert(`setting email to ${email}`);
-            }}
-          >
-            Submit
-          </button>
+        <button onClick={handleEmailChange}>Submit</button>
         </label>
       </div>
       <div>
@@ -77,13 +118,7 @@ function App() {
               setUsername(e.target.value);
             }}
           />
-          <button
-            onClick={() => {
-              alert(`setting username to ${username}`);
-            }}
-          >
-            Submit
-          </button>
+           <button onClick={handleUsernameChange}>Submit</button>
         </label>
       </div>
       <div>
