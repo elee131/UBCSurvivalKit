@@ -222,7 +222,7 @@ async function fetchReviewsForUser(userID) {
             `SELECT *
             FROM REVIEW r
             WHERE r.userID = :userID`,
-            [utilityID]
+            [userID]
         );
         return {status: 'success', data: result.rows, message:"Query successfully executed."};
 

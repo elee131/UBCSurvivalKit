@@ -17,14 +17,15 @@ app.use(express.json());             // Parse incoming JSON payloads
 const path = require('path');
 
 app.use(express.static(path.join(__dirname, '../cs304-frontend/build')));
+// mount the router
+app.use('/', appController);
+
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../cs304-frontend/build', 'index.html'));
 });
 
 
-// mount the router
-app.use('/', appController);
 
 
 // ----------------------------------------------------------
@@ -32,4 +33,3 @@ app.use('/', appController);
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/`);
 });
-

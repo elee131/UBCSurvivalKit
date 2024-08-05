@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 
 const testReviews = [
@@ -39,6 +39,42 @@ function App() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState(null);
+
+
+
+  useEffect(() => {
+      const fetchReviews = async () => {
+        if (userID === undefined) return;
+
+        try {
+          const response = await fetch(`/reviews-for-user?userID=${userID}`);
+
+          if (!response.ok) {
+            throw new Error('Error found while retrieving the response');
+          }
+
+          const result = await response.json();
+          const data = result.data.map(([utilID, reviewID, , rating, , , description]) => ({
+            utilID,
+            reviewID,
+            rating,
+            description,
+          }));
+
+          setReviews(data);
+          console.log(data);
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+
+      fetchReviews();
+    }, [userID]);
+
+
+
 
   const handleEmailChange = async () => {
     if (!email) {
