@@ -39,7 +39,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [responseMessage, setResponseMessage] = useState("");
+
 
 
   const handleEmailChange = async () => {
@@ -53,16 +53,15 @@ function App() {
           });
 
           const data = await response.json();
-          setResponseMessage(data.message);
 
-          if (data.success) {
-            alert("Email updated successfully");
-          } else {
-            alert("Failed to update email: " + data.message);
-          }
-        } catch (error) {
-          alert("Internal server error");
-        }
+           if (data.success) {
+                alert("Email updated successfully");
+             } else {
+                alert("Failed to update email: " + data.message);
+             }
+           } catch (error) {
+             alert("Internal server error");
+             }
       };
 
 
@@ -73,14 +72,12 @@ function App() {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ userID, newUsername: username }),
+                  body: JSON.stringify({ userID, newName: username }),
                 });
 
                 const data = await response.json();
-                setResponseMessage(data.message);
-
                 if (data.success) {
-                  alert("Email updated successfully");
+                  alert("Username updated successfully");
                 } else {
                   alert("Failed to update username: " + data.message);
                 }
@@ -88,6 +85,28 @@ function App() {
                 alert("Internal server error");
               }
             };
+
+
+      const handlePasswordChange = async () => {
+                try {
+                 const response = await fetch("/update-password", {
+                 method: "POST",
+                 headers: {
+                       "Content-Type": "application/json",
+                      },
+                        body: JSON.stringify({ userID, newPassword: password }),
+                            });
+                    const data = await response.json();
+
+                     if (data.success) {
+                              alert("Password updated successfully");
+                            } else {
+                              alert("Failed to update password: " + data.message);
+                            }
+                          } catch (error) {
+                            alert("Internal server error");
+                          }
+                        };
 
 
   return (
@@ -131,13 +150,7 @@ function App() {
               setPassword(e.target.value);
             }}
           />
-          <button
-            onClick={() => {
-              alert(`setting password to ${password}`);
-            }}
-          >
-            Submit
-          </button>
+           <button onClick={handlePasswordChange}>Submit</button>
         </label>
       </div>
       {testReviews.map((review) => (
