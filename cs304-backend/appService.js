@@ -216,6 +216,53 @@ async function fetchReviewsForUtil(utilityID) {
     });
 }
 
+async function fetchReviewsForUser(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM REVIEW r
+            WHERE r.userID = :userID`,
+            [userID]
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+async function fetchRequestsForUser(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM Request r
+            WHERE r.userID = :userID`,
+            [utilityID]
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+async function fetchAllRequests() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM REQUEST`,
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+
 async function fetchCafesListView() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -493,7 +540,7 @@ async function insertCafe(cafeID, name, operatingHours, buildingCode, locationID
         const result = await connection.execute(
           `INSERT INTO CAFE
            VALUES (:cafeID, :name, :operatingHours, :buildingCode, :locationID)`,
-           [cafeID, name, operatingHours, buildingCode, locationID] ,
+           [cafeID, name, operatingHours, buildingCode, locationID],
 
             {autoCommit: true}
         );
@@ -818,5 +865,8 @@ module.exports = {
     findMaxUtilityID,
     findMaxUserID,
     insertCafe,
-    findMaxRequestID
+    findMaxRequestID,
+    fetchReviewsForUser,
+    fetchRequestsForUser,
+    fetchAllRequests
 };
