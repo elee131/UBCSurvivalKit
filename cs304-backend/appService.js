@@ -78,21 +78,14 @@ async function testOracleConnection() {
     });
 }
 
-async function fetchDemotableFromDb() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT * FROM DEMOTABLE');
-        return result.rows;
-    }).catch(() => {
-        return [];
-    });
-}
-
 async function fetchWaterFountainFromDB() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT * FROM WATERFOUNTAIN');
-        return result.rows;
+
+        return {status: 'success', data: result.rows, message: "successfully got query result"};
+
     }).catch(() => {
-        return [];
+        return {status: 'error', data:[], message: "something went wrong while fetching waterfountain."};
     });
 
 }
@@ -125,11 +118,12 @@ async function fetchRequestedUtils(wrClicked, mClicked, wfClicked) {
             results = results.concat(result.rows);
         }
 
-        return results;
+        return {status: 'success', data: result.rows, message: "successfully got query result"};;
 
     }).catch((error) => {
         console.error("Database query failed: ", error);
-        return [];
+        return {status: 'error', data: [], message: "The query failed with the error:", error};
+
     });
 }
 
@@ -161,11 +155,11 @@ async function fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked) {
             results = results.concat(result.rows);
         }
 
-        return results;
+        return {status: 'success', data: result.rows, message: "successfully got query result."};;
 
     }).catch((error) => {
         console.error("Database query failed: ", error);
-        return [];
+        return {status: 'error', data: [], message: "The query failed with the error:", error};
     });
 }
 
@@ -181,7 +175,7 @@ async function detailedUtilInfo(utilityID) {
         } else if (30000000 <= utilityID ) {
             table = `WATERFOUNTAIN`
         } else {
-            throw new Error("Invalid utilityID");
+            return {status: 'error', data: [], message: "INVALID UTILITYID"};
         }
 
         query = `SELECT *
@@ -190,7 +184,12 @@ async function detailedUtilInfo(utilityID) {
             WHERE utilityID = :utilityID `;
 
         const result = await connection.execute(query, [utilityID]);
-        return result.rows;
+        return {status: 'success', data: result.rows, message: "successfully got query result"};;
+
+    }).catch(() => {
+        console.error("Database query failed: ", error);
+        return {status: 'error', data: [], message: "Something went wrong while trying to fetch utilInfo"};
+
     });
 }
 
@@ -202,9 +201,11 @@ async function fetchReviewsForUtil(utilityID) {
             WHERE r.utilityID = :utilityID`,
             [utilityID]
         );
-        return result.rows;
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
     }).catch(() => {
-        return [];
+        return {status: 'error', data: [], message:"Error executing query."};
+
     });
 }
 
@@ -214,9 +215,11 @@ async function fetchCafesListView() {
             `SELECT name, operatingHours, buildingCode
             FROM CAFE c`
         );
-        return result.rows;
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
     }).catch(() => {
-        return [];
+        return {status: 'error', data: [], message:"Error executing query:", error};
+
     });
 }
 
@@ -228,9 +231,11 @@ async function fetchCafeDetails(cafeID) {
             WHERE cafeID = :cafeID`,
             [cafeID]
         );
-        return result.rows;
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
     }).catch(() => {
-        return [];
+        return {status: 'error', data: [], message:"Error executing query:", error};
+
     });
 }
 
@@ -265,13 +270,14 @@ async function insertFountain(utilityID, overallRating, buildingCode, imageURL, 
         );
 
         if (waterResult.rowsAffected === 0) {
-            throw new Error('Failed to insert into WATERFOUNTAIN table');
+            return {status: 'failure',  message:"failed to insert into fountain."};
         }
 
-        return true;
+        return {status: 'success',  message:"successfully inserted fountain."};
+
 
     }).catch(() => {
-        return false;
+        return {status: 'error',  message:"Something went wrong while inserting into WATERFOUNTAIN."};
     });
 }
 
@@ -297,13 +303,14 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
 
         try {
             const result = await connection.execute(query, [buildingCode]);
-            return result.rows;
+            return {status: 'success', data: result.rows, message:"Query successfully executed."};
         } catch (error) {
             console.error("Error executing query:", error);
-            throw error;
+            return {status: 'error', data: [], message:"Error executing query:", error};
+
         }
     }).catch( () => {
-        return false;
+        return {status: 'error', data: [], message:"Error executing query:", error};
     })
 }
 
@@ -316,11 +323,10 @@ async function findCafesAtBuilding(buildingCode) {
             [buildingCode]
         );
 
-        console.log(result);
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
 
-        return result.rows;
     }).catch(() => {
-        return false;
+        return {status: 'error', data: [], message:"Error executing query:", error};
     })
 }
 
@@ -337,11 +343,10 @@ async function utilsWithMinNumOfReviews(minReviewNum) {
                 [minReviewNum]
             );
 
-            console.log("Query result:", result);
-            return result.rows;
+            return {status: 'successful', data: result.rows, message: "Successfully executed query."};
         } catch (error) {
             console.error("Error executing query:", error);
-            throw error;
+            return {status: 'error', data: [], message: "Query failed with error:", error};
         }
     });
 }
@@ -409,13 +414,14 @@ async function insertMicrowave(utilityID, overallRating, buildingCode, imageURL,
         );
 
         if (microwaveResult.rowsAffected === 0) {
-            throw new Error('Failed to insert into MICROWAVE table');
+            return {status: 'failure', message:"Failed to insert a new microwave."};
+
         }
 
-        return true;
+        return {status: 'success', message:"Successfully inserted a new microwave."};;
 
     }).catch(() => {
-        return false;
+        return {status: 'error', message: "Something went wrong while inserting microwave."};
     });
 }
 
@@ -575,13 +581,14 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
         );
 
         if (result.rowsAffected === 0) {
-            throw new Error('Failed to insert into REQUEST table');
+            return {status: 'failure', message:"Failed to insert a new request."};
         }
 
-        return true;
+        return {status: 'success', data: result.rows, message:"Successfully inserted new request."};
     }).catch((error) => {
         console.error('Insert REQUEST error:', error);
-        return false;
+        return {status: 'error', message:"Error inserting the request:", error};
+
     });
 }
 
@@ -709,31 +716,6 @@ async function updatePassword(userID, newPassword) {
        }
 
 
-
-
-async function updateNameDemotable(oldName, newName) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `UPDATE DEMOTABLE SET name=:newName where name=:oldName`,
-            [newName, oldName],
-            { autoCommit: true }
-        );
-
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
-    });
-}
-
-async function countDemotable() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT Count(*) FROM DEMOTABLE');
-        return result.rows[0][0];
-    }).catch(() => {
-        return -1;
-    });
-}
-
 async function findBestRatedBuilding() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -789,9 +771,6 @@ module.exports = {
     updateUsername,
     deleteAccount,
     testOracleConnection,
-    fetchDemotableFromDb,
-    updateNameDemotable,
-    countDemotable,
     fetchWaterFountainFromDB,
     insertFountain,
     insertMicrowave,

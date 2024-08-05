@@ -18,40 +18,15 @@ router.get('/check-db-connection', async (req, res) => {
     }
 });
 
-router.get('/demotable', async (req, res) => {
-    const tableContent = await appService.fetchDemotableFromDb();
-    res.json({data: tableContent});
-});
-
 router.get('/waterfountain', async (req, res) => {
     const tableContent = await appService.fetchWaterFountainFromDB();
-    res.json({data: tableContent});
-});
-
-
-router.post("/initiate-demotable", async (req, res) => {
-    const initiateResult = await appService.initiateDemotable();
-    if (initiateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
-
-router.post("/insert-demotable", async (req, res) => {
-    const { id, name } = req.body;
-    const insertResult = await appService.insertDemotable(id, name);
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
+    handleQueryResult(tableContent, res);
 });
 
 router.get("/util-with-numReviews", async (req, res) => {
     const {minReviewNum} = req.query;
     const result = await appService.utilsWithMinNumOfReviews(minReviewNum);
-    res.json({data: result});
+    handleQueryResult(result, res);
 });
 
 router.get("/find-cafes-with-drink", async (req,res) => {
@@ -74,7 +49,7 @@ router.get("/find-cafes-with-drink", async (req,res) => {
 router.get("/utils-at-building", async (req, res) => {
     const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
     const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
-    res.json({data: results});
+    handleQueryResult(results, res);
 
 });
 
@@ -102,17 +77,16 @@ router.get("/fetch-cafe-detail", async (req, res) => {
     const {cafeID} = req.query;
 
     const result = await appService.fetchCafeDetails(cafeID);
-    res.json({data: result});
+    handleQueryResult(result, res);
 });
 
 router.get("/all-cafes", async (req, res) => {
     const result = await appService.fetchCafesListView()
-    res.json({data: result});
+    handleQueryResult(result, res);
 });
 
 router.get("/best-rated-building", async (req, res) => {
     const result = await appService.findBestRatedBuilding();
-
     handleQueryResult(result, res);
 })
 
@@ -126,19 +100,19 @@ router.get("/reviews", async (req, res) => {
 router.get("/requested-utilities", async (req, res) => {
     const { wrClicked, mClicked, wfClicked } = req.query;
     const tableContent = await appService.fetchRequestedUtils(wrClicked, mClicked, wfClicked );
-    res.json({data: tableContent});
+    handleQueryResult(tableContent, res);
 });
 
 router.get("/requested-utilities-simple", async (req, res) => {
     const { wrClicked, mClicked, wfClicked } = req.query;
     const tableContent = await appService.fetchRequestedUtilsSimple(wrClicked, mClicked, wfClicked );
-    res.json({data: tableContent});
+    handleQueryResult(tableContent, res);
 });
 
 router.get("/detailed-util-info", async (req, res) => {
     const { utilityID } = req.query;
     const result = await appService.detailedUtilInfo(utilityID);
-    res.json({data: result} );
+    handleQueryResult(result, res);
 });
 
 
@@ -261,11 +235,7 @@ router.post("/insert-request", async (req, res) => {
 // handle date
     const insertResult = await appService.insertRequest(requestID, requestDate, status, requestDescription, requestType, amenityType,
         buildingName, userID,imageURL);
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
+    handleInsertResult(insertResult, res);
 })
 
 
@@ -301,8 +271,7 @@ router.get("/cafe-at-building", async(req, res) => {
     const {buildingCode} = req.query;
 
     const result = await appService.findCafesAtBuilding(buildingCode);
-    res.json({data: result});
-
+    handleQueryResult(result, res);
 });
 
 router.delete("/delete-request/:requestID", async (req, res) => {
@@ -361,35 +330,10 @@ router.post("/update-password", async (req, res) => {
             } else {
                 res.status(400).json({ success: false, message: updateResult.message });
             }
-        });
-
-
-
-
-router.post("/update-name-demotable", async (req, res) => {
-    const { oldName, newName } = req.body;
-    const updateResult = await appService.updateNameDemotable(oldName, newName);
-    if (updateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
 });
 
-router.get('/count-demotable', async (req, res) => {
-    const tableCount = await appService.countDemotable();
-    if (tableCount >= 0) {
-        res.json({
-            success: true,
-            count: tableCount
-        });
-    } else {
-        res.status(500).json({
-            success: false,
-            count: tableCount
-        });
-    }
-});
+
+
 
 
 module.exports = router;
