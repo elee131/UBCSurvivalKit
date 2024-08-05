@@ -8,7 +8,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [reviews, setReviews] = useState([]);
   const [requests, setRequests] = useState([])
-  const [error, setError] = useState(null);
+/*  const [error, setError] = useState(null);*/
 
 
 
@@ -35,7 +35,8 @@ function App() {
           setReviews(data);
           console.log(data);
         } catch (error) {
-          setError(error.message);
+            console.log(error.message);
+//          setError(error.message);
         }
       };
 
@@ -64,7 +65,8 @@ function App() {
                 setRequests(data);
                 console.log(data);
               } catch (error) {
-                setError(error.message);
+                 console.log(error.message);
+//                setError(error.message);
               }
             };
 
@@ -186,6 +188,27 @@ function App() {
       };
 
 
+    const deleteRequests = async(requestID) => {
+        try {
+              console.log(requestID);
+              const response = await fetch(`/delete-request/${requestID}`, {
+                method: 'DELETE',
+              });
+              const result = await response.json();
+
+              if (result.success) {
+                await fetchRequests();
+                alert(result.message);
+              } else {
+                alert(result.message);
+              }
+            } catch (error) {
+              console.error('Error deleting request:', error);
+              alert('Error deleting request');
+            }
+          };
+
+
 
   return (
     <div>
@@ -252,9 +275,7 @@ function App() {
                 <p>Description: {request.requestDescription}</p>
                 <button
                   onClick={() => {
-                    alert(
-                      `Deleting request with request ID: ${request.requestID}`
-                    );
+                    deleteRequests(request.requestID)
                   }}
                 >
                   Delete Request
