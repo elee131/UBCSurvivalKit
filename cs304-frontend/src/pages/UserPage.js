@@ -8,12 +8,13 @@ function App() {
   const [password, setPassword] = useState("");
   const [reviews, setReviews] = useState([]);
   const [requests, setRequests] = useState([])
-/*  const [error, setError] = useState(null);*/
 
 
 
       const fetchReviews = async () => {
-        if (userID === undefined) return;
+        if (userID === undefined){
+        setReviews([]);
+        }
 
         try {
           const response = await fetch(`/reviews-for-user?userID=${userID}`);
@@ -36,12 +37,14 @@ function App() {
           console.log(data);
         } catch (error) {
             console.log(error.message);
-//          setError(error.message);
+
         }
       };
 
       const fetchRequests = async () => {
-              if (userID === undefined) return;
+              if (userID === undefined){
+                  setRequests([]);
+              }
 
               try {
                 const response = await fetch(`/requests-for-user?userID=${userID}`);
@@ -59,14 +62,11 @@ function App() {
                           status,
                           requestDescription,
                   }));
-
-
-
                 setRequests(data);
                 console.log(data);
               } catch (error) {
                  console.log(error.message);
-//                setError(error.message);
+
               }
             };
 
@@ -209,6 +209,25 @@ function App() {
           };
 
 
+   const deleteAccount = async(userID) => {
+        try {
+              const response = await fetch(`/delete-account/${userID}`, {
+                method: 'DELETE',
+              });
+              const result = await response.json();
+
+              if (result.success) {
+                alert(result.message);
+                await setUserID(undefined)
+              } else {
+                alert(result.message);
+              }
+            } catch (error) {
+              console.error('Error deleting request:', error);
+              alert('Error deleting request');
+            }
+          };
+
 
   return (
     <div>
@@ -283,6 +302,8 @@ function App() {
                 <p>--------</p>
               </div>
             ))}
+
+       <button onClick={() => {deleteAccount(userID)}}>Delete Account</button>
     </div>
   );
 }
