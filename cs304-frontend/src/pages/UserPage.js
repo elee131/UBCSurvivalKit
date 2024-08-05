@@ -55,7 +55,7 @@ function App() {
           const data = await response.json();
           setResponseMessage(data.message);
 
-          if (data.status == "success") {
+          if (data.success) {
             alert("Email updated successfully");
           } else {
             alert("Failed to update email: " + data.message);
@@ -79,7 +79,7 @@ function App() {
                 const data = await response.json();
                 setResponseMessage(data.message);
 
-                if (data.status == "success") {
+                if (data.success) {
                   alert("Email updated successfully");
                 } else {
                   alert("Failed to update username: " + data.message);
