@@ -238,7 +238,7 @@ async function fetchRequestsForUser(userID) {
             `SELECT *
             FROM Request r
             WHERE r.userID = :userID`,
-            [utilityID]
+            [userID]
         );
         return {status: 'success', data: result.rows, message:"Query successfully executed."};
 

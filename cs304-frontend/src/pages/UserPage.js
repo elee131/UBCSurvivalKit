@@ -7,6 +7,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [reviews, setReviews] = useState([]);
+  const [requests, setRequests] = useState([])
   const [error, setError] = useState(null);
 
 
@@ -37,7 +38,37 @@ function App() {
         }
       };
 
+      const fetchRequests = async () => {
+              if (userID === undefined) return;
+
+              try {
+                const response = await fetch(`/requests-for-user?userID=${userID}`);
+
+                if (!response.ok) {
+                  throw new Error('Error found while retrieving the response');
+                }
+
+                  const result = await response.json();
+                  const data = result.data.map(([requestID, requestDate, status, requestDescription, requestType, amenityType, buildingName, userID, imageURL]) => ({
+                          requestID,
+                          buildingName,
+                          amenityType,
+                          requestType,
+                          status,
+                          requestDescription,
+                  }));
+
+
+
+                setRequests(data);
+                console.log(data);
+              } catch (error) {
+                setError(error.message);
+              }
+            };
+
       fetchReviews();
+      fetchRequests();
     }, [userID]);
 
 
@@ -185,6 +216,26 @@ function App() {
           <p>--------</p>
         </div>
       ))}
+
+        {requests.map((request) => (
+              <div key={request.requestID}>
+                <p>Request</p>
+                <p>Request Type: {request.requestType}</p>
+                <p>Amenity Type: {request.amenityType}</p>
+                <p>Status: {request.status}</p>
+                <p>Description: {request.requestDescription}</p>
+                <button
+                  onClick={() => {
+                    alert(
+                      `Deleting request with request ID: ${request.requestID}`
+                    );
+                  }}
+                >
+                  Delete Request
+                </button>
+                <p>--------</p>
+              </div>
+            ))}
     </div>
   );
 }
