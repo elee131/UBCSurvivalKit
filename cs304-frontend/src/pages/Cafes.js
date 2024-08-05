@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Style.css";
+import "./Utilities.css";
 import CafePopUp from "./CafePopUp";
 
 const testCafe = {
@@ -68,10 +69,12 @@ function Cafe(prop) {
 function App() {
   const [buildingCode, setBuildingCode] = useState("");
   return (
-    <div>
+    <div className = "cafe-container">
       <div className="Navbar">
-        <Link to="/">Home</Link>
+         <Link to="/" style={{ textDecoration: 'none',  color: "black"}}>Home</Link>
       </div>
+
+      <div className = "cafe-building">
       <label>
         Building:
         <input
@@ -82,6 +85,10 @@ function App() {
           }}
         />
       </label>
+
+      </div>
+
+      <div className = "cafes">
       {testCafes.map((cafe) => {
         if (
           buildingCode !== "" &&
@@ -89,8 +96,10 @@ function App() {
         ) {
           return null;
         }
-        return <Cafe cafe={cafe} />;
+        return <div className = "cafe"><Cafe cafe={cafe} /> </div>;
       })}
+
+      </div>
     </div>
   );
 }
