@@ -187,7 +187,7 @@ async function detailedUtilInfo(utilityID) {
 
         query = `SELECT *
             FROM UTILITY NATURAL JOIN ` + table +
-            ` NATURAL JOIN HOURS NATURAL JOIN RATING
+            ` NATURAL JOIN HOURS NATURAL JOIN RATING NATURAL JOIN LOCATION
             WHERE utilityID = :utilityID `;
 
         const result = await connection.execute(query, [utilityID]);
@@ -368,6 +368,7 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
         return {status: 'error', data: [], message:"Error executing query:", error};
     })
 }
+
 
 async function findCafesAtBuilding(buildingCode) {
     return await withOracleDB(async (connection) => {

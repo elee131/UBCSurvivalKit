@@ -4,19 +4,50 @@ import "./Style.css";
 import "./Utilities.css";
 import PopUp from "./PopUp";
 
-function Util(prop) {
-    const util = prop.util;
+function Util({ util, detailed }) {
+    const determineType = (id) => {
+        if (id >= 10000000 && id < 20000000) return 'Washroom';
+        if (id >= 20000000 && id < 30000000) return 'Microwave';
+        if (id >= 30000000 && id < 40000000) return 'Water Fountain';
+        return 'Unknown';
+    };
+
     return (
-        <div className = "utilities">
-            <p>Type: {util.type}</p>
-            <p>Rating: {util.rating}</p>
-            <p>
-                Located: {util.building} {util.location}
-            </p>
-            <label>
-                The popup is just a placeholder
-                <PopUp util={testUtil} />
-            </label>
+        <div className="utilities">
+            <p>Type: {determineType(util.utilityID)}</p>
+            <p>Rating: {util.overallRating}</p>
+            <p>Located: {util.buildingCode}</p>
+            <p>Image: {util.imageURL || 'N/A'}</p>
+            <p>Hours: {util.operatingHours}</p>
+
+            {detailed && (
+                <label>
+                    <PopUp util={util} />
+                </label>
+            )}
+        </div>
+    );
+}
+
+function SimpleUtil({ util, detailed }) {
+    const determineType = (id) => {
+        if (id >= 10000000 && id < 20000000) return 'Washroom';
+        if (id >= 20000000 && id < 30000000) return 'Microwave';
+        if (id >= 30000000 && id < 40000000) return 'Water Fountain';
+        return 'Unknown';
+    };
+
+    return (
+        <div className="utilities">
+            <p>Type: {determineType(util.utilityID)}</p>
+            <p>Located: {util.buildingCode}</p>
+            <p>Hours: {util.operatingHours}</p>
+
+            {detailed && (
+                <label>
+                    <PopUp util={util} />
+                </label>
+            )}
         </div>
     );
 }
@@ -45,26 +76,40 @@ function App() {
 
             const response = await fetch(endpoint, {
                 method: "GET",
-
             });
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.statusText}`);
             }
 
-
             const result = await response.json();
             console.log(result);
+            console.log(result.data);
 
-            if (result.success) {
-                setUtilities(transformedData);
+            if (result.success && !showSimple) {
+                const formattedData = result.data.map(item => ({
+                    utilityID: item[0],
+                    overallRating: item[1],
+                    buildingCode: item[2],
+                    imageURL: item[3],
+                    operatingHours: item[4],
+                }));
+                setUtilities(formattedData);
+                console.log(utilities);
+            } else if (result.success) {
+                const formattedData = result.data.map(item => ({
+                    utilityID: item[0],
+                    buildingCode: item[1],
+                    operatingHours: item[2],
+                }));
+                setUtilities(formattedData);
             } else {
                 console.error("Error from server:", result.message);
+
             }
         } catch (error) {
             console.error("Error fetching utilities:", error);
         }
     };
-
 
     const searchWithBuildingCode = async () => {
         const queryString = new URLSearchParams({
@@ -78,7 +123,25 @@ function App() {
             const endpoint = `/utils-at-building?${queryString}`;
             const response = await fetch(endpoint);
             const data = await response.json();
-            setUtilities(data);
+
+            if (showSimple) {
+                const formattedData = data.data.map(item => ({
+                    utilityID: item[0],
+                    buildingCode: item[1],
+                    operatingHours: item[2],
+                }));
+                setUtilities(formattedData);
+
+            } else {
+                const formattedData = data.data.map(item => ({
+                    utilityID: item[0],
+                    overallRating: item[1],
+                    buildingCode: item[2],
+                    imageURL: item[3],
+                    operatingHours: item[4],
+                }));
+                setUtilities(formattedData);
+            }
         } catch (error) {
             console.error("Error fetching utilities:", error);
         }
@@ -88,11 +151,9 @@ function App() {
         fetchUtilities();
     }, [showWash, showWater, showMicro, showSimple]);
 
-    useEffect(() => {
-        if (buildingCode) {
-            searchWithBuildingCode();
-        }
-    }, [buildingCode, showWash, showWater, showMicro, showSimple]);
+    const handleSearchClick = () => {
+        searchWithBuildingCode();
+    };
 
     return (
         <div className="container">
@@ -143,23 +204,19 @@ function App() {
                     <input
                         type="text"
                         value={buildingCode}
-                        onChange={(e) => {
-                            setBuildingCode(e.target.value);
-                            searchWithBuildingCode(); // Trigger search on change
-                        }}
+                        onChange={(e) => setBuildingCode(e.target.value)}
                     />
                 </label>
+                <button onClick={handleSearchClick}>Search</button>
             </div>
 
             <div className="utilities-container">
                 {utilities.map((util) => {
-                    if (
-                        buildingCode !== "" &&
-                        buildingCode.toLowerCase() !== util.buildingCode.toLowerCase()
-                    ) {
-                        return null;
-                    }
-                    return <Util key={util.utilID} util={util} detailed={!showSimple}/>;
+                    return showSimple ? (
+                        <SimpleUtil key={util.utilityID} util={util} detailed={!showSimple} />
+                    ) : (
+                        <Util key={util.utilityID} util={util} detailed={!showSimple} />
+                    );
                 })}
             </div>
         </div>
