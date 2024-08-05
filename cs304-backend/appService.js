@@ -652,9 +652,15 @@ async function updateUsername(userID, newName) {
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
+        if (result.rowsAffected && result.rowsAffected > 0) {
+                       return { status: 'success', message: 'Username has been updated successfully.' };
+                   } else {
+                       return { status: 'failure', message: 'No account found with the provided userID.' };
+                   }
+
     }).catch(() => {
-        return false;
+        console.error('Failed to update the username:', error);
+       return { status: 'error', message: 'There was an error while updating the username.' };
     });
 }
 
@@ -662,14 +668,23 @@ async function updateUsername(userID, newName) {
 async function updateEmail(userID, newEmail) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE UserInfo SET email=:newEmail where userID=:userID`,
+            `UPDATE UserInfo SET email = :newEmail WHERE userID = :userID`,
             [newEmail, userID],
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
+        if (result.rowsAffected && result.rowsAffected > 0) {
+            return { status: 'success', message: 'Email has been updated successfully.' };
+        } else {
+            return { status: 'failure', message: 'No account found with the provided userID.' };
+        }
+    }).catch((error) => {
+        console.error('Failed to update email:', error);
+        if (error.errorNum === 1) {
+            return { status: 'error', message: 'This email is already in use.' };
+        } else {
+            return { status: 'error', message: 'There was an error while updating the email.' };
+        }
     });
 }
 
@@ -682,12 +697,16 @@ async function updatePassword(userID, newPassword) {
             { autoCommit: true }
         );
 
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
-    });
-}
-
+         if (result.rowsAffected && result.rowsAffected > 0) {
+                              return { status: 'success', message: 'Password has been updated successfully.' };
+                          } else {
+                              return { status: 'failure', message: 'No account found with the provided userID.' };
+                          }
+           }).catch(() => {
+               console.error('Failed to update the password:', error);
+              return { status: 'error', message: 'There was an error while updating the password.' };
+           });
+       }
 
 
 

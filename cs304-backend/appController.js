@@ -322,21 +322,30 @@ router.delete("/delete-request/:requestID", async (req, res) => {
 router.post("/update-username", async (req, res) => {
     const { userID, newName } = req.body;
     const updateResult = await appService.updateUsername(userID, newName);
-    if (updateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
+
+     if (updateResult.status === 'success') {
+            res.status(200).json({ success: true, message: updateResult.message });
+        } else if (updateResult.status === 'failure') {
+            res.status(404).json({ success: false, message: updateResult.message });
+        } else {
+            res.status(400).json({ success: false, message: updateResult.message });
+        }
+    });
 
 
-router.post("/update-email", async (req, res) => {
+router.post('/update-email', async (req, res) => {
     const { userID, newEmail } = req.body;
-    const updateResult = await appService.updateEmail(userID, newEmail);
-    if (updateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+    try {
+        const updateResult = await appService.updateEmail(userID, newEmail);
+        if (updateResult.status === 'success') {
+            res.status(200).json({ success: true, message: updateResult.message });
+        } else if (updateResult.status === 'failure') {
+            res.status(404).json({ success: false, message: updateResult.message });
+        } else {
+            res.status(400).json({ success: false, message: updateResult.message });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 
@@ -344,12 +353,15 @@ router.post("/update-email", async (req, res) => {
 router.post("/update-password", async (req, res) => {
     const { userID, newPassword } = req.body;
     const updateResult = await appService.updatePassword(userID, newPassword);
-    if (updateResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
-    }
-});
+
+     if (updateResult.status === 'success') {
+                res.status(200).json({ success: true, message: updateResult.message });
+            } else if (updateResult.status === 'failure') {
+                res.status(404).json({ success: false, message: updateResult.message });
+            } else {
+                res.status(400).json({ success: false, message: updateResult.message });
+            }
+        });
 
 
 
