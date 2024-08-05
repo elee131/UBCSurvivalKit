@@ -70,7 +70,7 @@ const testUtils = [
 function Util(prop) {
   const util = prop.util;
   return (
-    <div className = "review">
+    <div className = "utilities">
       <p>Type: {util.type}</p>
       <p>Rating: {util.rating}</p>
       <p>
@@ -92,8 +92,12 @@ function App() {
   return (
     <div className = "container">
       <div className="Navbar">
-        <Link to="/">Home</Link>
+        <Link to="/" style={{ textDecoration: 'none',  color: "black"}}>Home</Link>
       </div>
+
+      <div className= "checkbox-container">
+
+      <div className = "utility">
       <label>
         Washrooms
         <input
@@ -105,7 +109,7 @@ function App() {
         />
       </label>
       <label>
-        | Water Fountains
+        Water Fountains
         <input
           type="checkbox"
           checked={showWater}
@@ -115,7 +119,7 @@ function App() {
         />
       </label>
       <label>
-        | Microwaves
+        Microwaves
         <input
           type="checkbox"
           checked={showMicro}
@@ -123,9 +127,13 @@ function App() {
             setShowMicro(!showMicro);
           }}
         />
+
       </label>
-      <label>
-        | Building:
+
+      </div>
+
+      <label className = "building">
+        Building:
         <input
           type="text"
           value={buildingCode}
@@ -135,7 +143,9 @@ function App() {
         />
       </label>
 
-      <div className = "review-container">
+      </div>
+
+      <div className = "utilities-container">
       {testUtils.map((util) => {
         if (
           buildingCode !== "" &&

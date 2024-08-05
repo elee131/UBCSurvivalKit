@@ -3,6 +3,7 @@
   overflow: hidden;
   display: flex;
   align-items: flex-start;
+  padding: 1rem 1rem;
 }
 
 .App {
