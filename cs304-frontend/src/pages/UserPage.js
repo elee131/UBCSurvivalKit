@@ -40,80 +40,92 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-
-
   const handleEmailChange = async () => {
-        try {
-          const response = await fetch("/update-email", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userID, newEmail: email }),
-          });
+    if (!email) {
+      alert("Email cannot be empty");
+      return;
+    }
 
-          const data = await response.json();
+    try {
+      const response = await fetch("/update-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newEmail: email }),
+      });
 
-           if (data.success) {
-                alert("Email updated successfully");
-             } else {
-                alert("Failed to update email: " + data.message);
-             }
-           } catch (error) {
-             alert("Internal server error");
-             }
+      const data = await response.json();
 
-             setEmail("");
-      };
+      if (data.success) {
+        alert("Email updated successfully");
+      } else {
+        alert("Failed to update email: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
 
+    setEmail("");
+  };
 
-      const handleUsernameChange = async () => {
-              try {
-                const response = await fetch("/update-username", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ userID, newName: username }),
-                });
+  const handleUsernameChange = async () => {
+    if (!username) {
+      alert("Username cannot be empty");
+      return;
+    }
 
-                const data = await response.json();
-                if (data.success) {
-                  alert("Username updated successfully");
-                } else {
-                  alert("Failed to update username: " + data.message);
-                }
-              } catch (error) {
-                alert("Internal server error");
-              }
+    try {
+      const response = await fetch("/update-username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newName: username }),
+      });
 
-              setUsername("");
-            };
+      const data = await response.json();
 
+      if (data.success) {
+        alert("Username updated successfully");
+      } else {
+        alert("Failed to update username: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
 
-      const handlePasswordChange = async () => {
-                try {
-                 const response = await fetch("/update-password", {
-                 method: "POST",
-                 headers: {
-                       "Content-Type": "application/json",
-                      },
-                        body: JSON.stringify({ userID, newPassword: password }),
-                            });
-                    const data = await response.json();
+    setUsername("");
+  };
 
-                     if (data.success) {
-                              alert("Password updated successfully");
-                            } else {
-                              alert("Failed to update password: " + data.message);
-                            }
-                          } catch (error) {
-                            alert("Internal server error");
-                          }
+  const handlePasswordChange = async () => {
+    if (!password) {
+      alert("Password cannot be empty");
+      return;
+    }
 
-                           setPassword("");
-                        };
+    try {
+      const response = await fetch("/update-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newPassword: password }),
+      });
 
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Password updated successfully");
+      } else {
+        alert("Failed to update password: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
+
+    setPassword("");
+  };
 
   return (
     <div>
@@ -124,13 +136,11 @@ function App() {
         <label>
           Change email:
           <input
-            type="text"
+            type="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
           />
-        <button onClick={handleEmailChange}>Submit</button>
+          <button onClick={handleEmailChange}>Submit</button>
         </label>
       </div>
       <div>
@@ -139,42 +149,37 @@ function App() {
           <input
             type="text"
             value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+            onChange={(e) => setUsername(e.target.value)}
           />
-           <button onClick={handleUsernameChange}>Submit</button>
+          <button onClick={handleUsernameChange}>Submit</button>
         </label>
       </div>
       <div>
         <label>
           Change password:
           <input
-            type="text"
+            type="password"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
           />
-           <button onClick={handlePasswordChange}>Submit</button>
+          <button onClick={handlePasswordChange}>Submit</button>
         </label>
       </div>
       {testReviews.map((review) => (
-        <div>
-          <p> Review for util: {review.utilID} </p>
-          <p> Rating: {review.rating} </p>
-          <p> Description: {review.description} </p>
+        <div key={review.reviewID}>
+          <p>Review for util: {review.utilID}</p>
+          <p>Rating: {review.rating}</p>
+          <p>Description: {review.description}</p>
           <button
             onClick={() => {
               alert(
-                `deleting review with util id: ${review.utilID}; and review id: ${review.reviewID}`
+                `Deleting review with util ID: ${review.utilID}; and review ID: ${review.reviewID}`
               );
             }}
           >
-            {" "}
-            Delete Review{" "}
+            Delete Review
           </button>
-          <p> -------- </p>
+          <p>--------</p>
         </div>
       ))}
     </div>

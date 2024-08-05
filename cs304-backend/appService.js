@@ -216,6 +216,53 @@ async function fetchReviewsForUtil(utilityID) {
     });
 }
 
+async function fetchReviewsForUser(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM REVIEW r
+            WHERE r.userID = :userID`,
+            [utilityID]
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+async function fetchRequestsForUser(userID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM Request r
+            WHERE r.userID = :userID`,
+            [utilityID]
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+async function fetchAllRequests() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT *
+            FROM REQUEST`,
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+
 async function fetchCafesListView() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -382,7 +429,7 @@ async function newUser(userID, username, email, password, isAdmin) {
 async function logIn(email, password) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `SELECT * 
+            `SELECT *
             FROM USERINFO
             WHERE email = :email AND password = :password`,
             [email, password]
@@ -493,7 +540,7 @@ async function insertCafe(cafeID, name, operatingHours, buildingCode, locationID
         const result = await connection.execute(
           `INSERT INTO CAFE
            VALUES (:cafeID, :name, :operatingHours, :buildingCode, :locationID)`,
-           [cafeID, name, operatingHours, buildingCode, locationID] ,
+           [cafeID, name, operatingHours, buildingCode, locationID],
 
             {autoCommit: true}
         );
@@ -547,7 +594,7 @@ async function findCafesWithDrinks(selectedDrinks) {
         WHERE NOT EXISTS (
             (SELECT name FROM Drink WHERE name IN (${drinksList}))
             MINUS
-            (SELECT s.drinkName 
+            (SELECT s.drinkName
              FROM Serves s
              WHERE s.cafeID = c.cafeID)
         )
@@ -570,7 +617,7 @@ async function insertReview(reviewID, utilityID, userID, cleanliness, functional
         const result = await connection.execute(
             `INSERT INTO Review
             (reviewID, utilityID, userID, cleanliness, functionality, accessibility, description)
-            VALUES 
+            VALUES
             (:reviewID, :utilityID, :userID, :cleanliness, :functionality, :accessibility, :description)`,
             [reviewID, utilityID, userID, cleanliness, functionality, accessibility, description],
             { autoCommit: true }
@@ -592,10 +639,10 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `INSERT INTO Request
-                (requestID, requestDate, status, requestDescription, 
+                (requestID, requestDate, status, requestDescription,
                  requestType, amenityType, buildingName, userID, imageURL)
-                VALUES 
-                    (:requestID, TO_DATE(:requestDate, 'YYYY-MM-DD'), :status, 
+                VALUES
+                    (:requestID, TO_DATE(:requestDate, 'YYYY-MM-DD'), :status,
                      :requestDescription, :requestType, :amenityType, :buildingName, :userID, :imageURL)`,
             [requestID, requestDate, status, requestDescription, requestType,
                 amenityType, buildingName, userID, imageURL],
@@ -744,9 +791,9 @@ async function findBestRatedBuilding() {
             `SELECT t.buildingCode, t.average
              FROM (
                   SELECT buildingCode, AVG(overallRating) as average
-                  FROM Building NATURAL JOIN Utility 
+                  FROM Building NATURAL JOIN Utility
                   GROUP BY buildingCode) t
-             WHERE t.average in (SELECT MAX(s.average) 
+             WHERE t.average in (SELECT MAX(s.average)
                                     FROM (
                                            SELECT buildingCode, AVG(overallRating) as average
                                            FROM Building NATURAL JOIN Utility
@@ -818,5 +865,8 @@ module.exports = {
     findMaxUtilityID,
     findMaxUserID,
     insertCafe,
-    findMaxRequestID
+    findMaxRequestID,
+    fetchReviewsForUser,
+    fetchRequestsForUser,
+    fetchAllRequests
 };

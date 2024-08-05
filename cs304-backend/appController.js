@@ -46,6 +46,7 @@ router.get("/find-cafes-with-drink", async (req,res) => {
 
 
 
+
 router.get("/utils-at-building", async (req, res) => {
     const {buildingCode, wrClicked, mClicked, wfClicked} = req.query;
     const results = await appService.findUtilsAtBuilding(buildingCode,wrClicked,mClicked,wfClicked);
@@ -91,10 +92,27 @@ router.get("/best-rated-building", async (req, res) => {
 })
 
 
-router.get("/reviews", async (req, res) => {
+router.get("/reviews-for-util", async (req, res) => {
     const {utilityID} = req.query;
     const reviews = await appService.fetchReviewsForUtil(utilityID);
-    res.json({data: reviews});
+    handleQueryResult(reviews, res)
+});
+
+router.get("/reviews-for-user", async (req, res) => {
+    const {userID} = req.query;
+    const reviews = await appService.fetchReviewsForUser(userID);
+    handleQueryResult(reviews, res)
+});
+
+router.get("/requests-for-user", async (req, res) => {
+    const {userID} = req.query;
+    const result = await appService.fetchRequestsForUser(userID);
+    handleQueryResult(result, res);
+});
+router.get("/all-requests", async (req, res) => {
+
+    const reviews = await appService.fetchAllRequests();
+    handleQueryResult(reviews, res)
 });
 
 router.get("/requested-utilities", async (req, res) => {
