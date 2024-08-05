@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Style.css";
+import "./Utilities.css"
 import PopUp from "./PopUp";
 
 const testUtil = {
@@ -69,7 +70,7 @@ const testUtils = [
 function Util(prop) {
   const util = prop.util;
   return (
-    <div>
+    <div className = "utilities">
       <p>Type: {util.type}</p>
       <p>Rating: {util.rating}</p>
       <p>
@@ -79,7 +80,6 @@ function Util(prop) {
         The popup is just a placeholder
         <PopUp util={testUtil} />
       </label>
-      <p>------------</p>
     </div>
   );
 }
@@ -90,10 +90,14 @@ function App() {
   const [showMicro, setShowMicro] = useState(false);
   const [buildingCode, setBuildingCode] = useState("");
   return (
-    <div>
+    <div className = "container">
       <div className="Navbar">
-        <Link to="/">Home</Link>
+        <Link to="/" style={{ textDecoration: 'none',  color: "black"}}>Home</Link>
       </div>
+
+      <div className= "checkbox-container">
+
+      <div className = "utility">
       <label>
         Washrooms
         <input
@@ -105,7 +109,7 @@ function App() {
         />
       </label>
       <label>
-        | Water Fountains
+        Water Fountains
         <input
           type="checkbox"
           checked={showWater}
@@ -115,7 +119,7 @@ function App() {
         />
       </label>
       <label>
-        | Microwaves
+        Microwaves
         <input
           type="checkbox"
           checked={showMicro}
@@ -123,9 +127,13 @@ function App() {
             setShowMicro(!showMicro);
           }}
         />
+
       </label>
-      <label>
-        | Building:
+
+      </div>
+
+      <label className = "building">
+        Building:
         <input
           type="text"
           value={buildingCode}
@@ -134,6 +142,10 @@ function App() {
           }}
         />
       </label>
+
+      </div>
+
+      <div className = "utilities-container">
       {testUtils.map((util) => {
         if (
           buildingCode !== "" &&
@@ -152,6 +164,7 @@ function App() {
         }
         return null;
       })}
+      </div>
     </div>
   );
 }
