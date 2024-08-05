@@ -191,7 +191,6 @@ function handleQueryResult(queryResult, res) {
         res.status(500).json({success: false, message: queryResult.message});
     }
 
-    res.setHeader('Content-Type', 'application/json');
 }
 
 
