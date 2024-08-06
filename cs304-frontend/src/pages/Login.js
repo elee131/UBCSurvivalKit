@@ -57,9 +57,10 @@ function App() {
           <div>
             <div className="Login-submit">
               <button
-                onClick={() =>
-                  alert("username: " + username + "\npassword: " + password)
-                }
+                onClick={() => {
+                  alert("username: " + username + "\npassword: " + password);
+                  login();
+                }}
               >
                 Login
               </button>
