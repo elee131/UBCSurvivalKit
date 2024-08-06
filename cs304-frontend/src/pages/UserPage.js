@@ -13,7 +13,7 @@ function UserPage() {
 
   useEffect(() => {
 
-    const makeCookie = setCookie("userID", 0, 10); // just for testing imma delte later
+//    const makeCookie = setCookie("userID", 0, 10); // just for testing imma delte later
 
     const cookieUserID = getCookie("userID");
     console.log(cookieUserID)

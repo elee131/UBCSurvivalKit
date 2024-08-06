@@ -538,6 +538,10 @@ INSERT INTO Review
 VALUES
     (5, 20000001, 4, 4, 4, 4, 'GREAT!');
 
+INSERT INTO Review
+VALUES
+    (6, 20000001, 2, 2, 2, 2, 'I hated it!');
+
 
 INSERT INTO Request (
     requestID, requestDate, requestDescription, requestType, amenityType, buildingName, userID, imageURL)

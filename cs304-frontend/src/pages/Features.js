@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Utilities.css";
 
@@ -15,10 +15,19 @@ function App() {
   const [minimumReviewUtil, setMinimumReviewUtil] = useState([]);
   const [bestBuildings, setBestBuildings] = useState([]);
   const [cafeWithDrinks, setCafeWithDrinks] = useState([]);
+  const [allDrinks, setAllDrinks] = useState([])
 
 //  const [showDrinks, setShowDrinks] = useState(true);
 
   const [wantedDrinks, setWantedDrinks] = useState("");
+
+
+  useEffect(() => {
+      fetchAllDrinks();
+    }, []);
+
+
+
 
   const fetchAverageRatings = async () => {
     try {
@@ -75,6 +84,24 @@ function App() {
       console.log(error.message);
     }
   };
+
+  const fetchAllDrinks = async () => {
+     try {
+          const response = await fetch(`/all-drinks`);
+          const result = await response.json();
+
+          if (result.success) {
+            setAllDrinks(result.data);
+          } else {
+            alert(result.message);
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+  };
+
+
+
 
   return (
     <div className = "features-container">
@@ -133,9 +160,22 @@ function App() {
           ))}
         </div>
       </div>
-
+<div>
 
 <div>
+        <div>Available Drinks</div>
+
+        {allDrinks.map(([drinkName]) => (
+                  <div key={drinkName}>
+                 <p><strong>Drink Name:</strong> {drinkName}</p>
+                  </div>
+                          ))}
+
+                          </div>
+
+
+
+
         <div>Which Drinks do you want?</div>
         <input
           type="text"
