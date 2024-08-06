@@ -1,0 +1,10 @@
+.reviews-container {
+    max-height: 300px; /* Adjust this value as needed */
+    overflow-y: auto;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.review {
+    margin-bottom: 15px;
+}
