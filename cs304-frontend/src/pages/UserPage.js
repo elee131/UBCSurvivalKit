@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getCookie, setCookie} from './CookieHelper';
+import "./Utilities.css";
 
 function UserPage() {
   const [userID, setUserID] = useState(null);
@@ -13,12 +14,9 @@ function UserPage() {
 
   useEffect(() => {
 
-//    const makeCookie = setCookie("userID", 0, 10); // just for testing imma delte later
-
     const cookieUserID = getCookie("userID");
     console.log(cookieUserID)
     if (!cookieUserID) {
-       console.log("I am here!");
       navigate("/login");
       return;
     }
@@ -236,10 +234,12 @@ function UserPage() {
   };
 
   return (
-    <div>
+    <div className = "features-container">
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
+
+      <div>
       <div>
         <label>
           Change email:
@@ -273,6 +273,8 @@ function UserPage() {
           <button onClick={handlePasswordChange}>Submit</button>
         </label>
       </div>
+
+        </div>
       {reviews.map((review) => (
         <div key={review.reviewID}>
           <p>Review for util: {review.utilityID}</p>
