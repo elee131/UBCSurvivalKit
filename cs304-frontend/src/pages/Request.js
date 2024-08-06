@@ -15,7 +15,7 @@ function App() {
       return;
     }
 
-    const today = new Date().toISOString();
+    const today = new Date();
 
     try {
       const response = await fetch("/insert-request", {

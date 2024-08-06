@@ -523,16 +523,19 @@ async function findMaxCafeID() {
     });
 }
 
+
 async function findMaxLocationID() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT MAX(locationID) as maxID
-            FROM LOCATION`
+             FROM LOCATION`
         );
-        return result.rows[0][0];
+        console.log(result);
+        const maxID = result.rows[0][0];
+        return {status: 'success', data: maxID, message: "found max locationID"};
     }).catch((error) => {
         console.error(error);
-        throw new Error("Failed to find max locationID");
+        return {status: 'error', message: "failed to find max locationID"};
     });
 }
 
