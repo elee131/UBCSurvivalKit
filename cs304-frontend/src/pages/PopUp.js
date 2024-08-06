@@ -5,12 +5,24 @@ import { getCookie, setCookie} from './CookieHelper';
 import "reactjs-popup/dist/index.css";
 import './popup.css';
 
-function MakeReview({ utilityID, userID }) {
-  const [cleanliness, setCleanliness] = useState(0);
-  const [functionality, setFunctionality] = useState(0);
-  const [accessibility, setAccessibility] = useState(0);
+function MakeReview({ utilityID }) {
+  const [cleanliness, setCleanliness] = useState(1);
+  const [functionality, setFunctionality] = useState(1);
+  const [accessibility, setAccessibility] = useState(1);
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
+  const [userID, setUserID] = useState(null);
+
+
+  useEffect(() => {
+    const cookieUserID = getCookie("userID");
+
+    if (!cookieUserID) {
+      navigate("/login");
+      return;
+    }
+    setUserID(cookieUserID);
+  }, [navigate]);
 
   console.log("utilityID in make review:" + utilityID);
   console.log("userID in make reivew:" + userID);
