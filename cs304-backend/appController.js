@@ -63,11 +63,7 @@ router.post("/log-in", async (req, res) => {
         }
         const result = await appService.logIn(email, password);
 
-        if (result) {
-            res.json({ success: true });
-        } else {
-            res.status(401).json({ success: false, message: result.message });
-        }
+        handleQueryResult(result, res);
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
@@ -239,15 +235,20 @@ router.post("/insert-microwave", async (req, res) => {
 });
 
 router.post("/insert-review", async (req, res) => {
-    const { reviewID, utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
-    const insertResult
-        = await appService.insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description);
+    const {  utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
 
-    if (insertResult) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false });
+    const currMaxReviewID = await appService.findMaxReviewID(utilityID);
+
+    if (currMaxReviewID === undefined || currMaxReviewID === null) {
+        return res.status(400).json({ success: false, message: "Failed to find suitable reviewID" });
     }
+
+    console.log("currmaxreviewid:" + currMaxReviewID);
+
+    const insertResult
+        = await appService.insertReview(currMaxReviewID + 1, utilityID, userID, cleanliness, functionality, accessibility, description);
+
+    handleInsertResult(insertResult, res);
 });
 
 router.post("/insert-request", async (req, res) => {

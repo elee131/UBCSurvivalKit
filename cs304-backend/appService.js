@@ -430,7 +430,7 @@ async function newUser(userID, username, email, password, isAdmin) {
 async function logIn(email, password) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `SELECT * 
+            `SELECT userId, username
             FROM USERINFO
             WHERE email = :email AND password = :password`,
             [email, password]
@@ -440,10 +440,10 @@ async function logIn(email, password) {
 
         if (result.rows.length === 0) {
             console.log("email or password is wrong")
-            return false;
+            return {status: 'failure', message: "email or password is wrong" };
         }
 
-        return true;
+        return {status: 'success',data: result.rows, message: "successfully logged in." };
 
     });
 }
@@ -517,7 +517,23 @@ async function findMaxRequestID() {
         return maxID;
     }).catch((error) => {
         console.error(error);
-        throw new Error("Failed to find max cafeID");
+        throw new Error("Failed to find max requestID");
+    });
+}
+async function findMaxReviewID(utilityID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(reviewID) as reviewID
+            FROM REVIEW
+            WHERE utilityID = :utilityID`,
+            [utilityID]
+        );
+        console.log(result);
+        const maxID = result.rows[0][0];
+        return maxID;
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max reviewID");
     });
 }
 
@@ -869,5 +885,6 @@ module.exports = {
     findMaxRequestID,
     fetchReviewsForUser,
     fetchRequestsForUser,
-    fetchAllRequests
+    fetchAllRequests,
+    findMaxReviewID
 };
