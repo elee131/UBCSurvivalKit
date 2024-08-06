@@ -12,6 +12,10 @@
     margin-bottom: 1rem;
 }
 
+.features-container > div{
+    margin-bottom: 2rem;
+}
+
 
 .cafe-container{
   background-color: #cce5e8;
