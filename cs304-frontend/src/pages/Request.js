@@ -16,23 +16,25 @@ function App() {
     }
 
     const today = new Date().toISOString();
-    try {
-      const formData = new FormData();
-      formData.append("requestDate", today);
-      formData.append("requestDescription", description);
-      formData.append("requestType", requestType);
-      formData.append("amenityType", util);
-      formData.append("buildingName", building);
-      formData.append("userID", userID);
-      if (file) formData.append("imageURL", file);
 
+    try {
       const response = await fetch("/insert-request", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requestDate: today,
+          requestDescription: description,
+          requestType: requestType,
+          amenityType: util,
+          buildingName: building,
+          userID: userID,
+          imageURL: file ? file.name : null,
+        }),
       });
 
       const data = await response.json();
-
       if (data.success) {
         alert("Request submitted successfully!");
       } else {
@@ -42,6 +44,7 @@ function App() {
       alert("Internal server error: " + error);
     }
   };
+
 
   return (
       <div>
@@ -57,17 +60,19 @@ function App() {
                 placeholder="Building Code"
             />
             <select value={util} onChange={(e) => setUtil(e.target.value)}>
+              <option value="">Select Amenity</option>
               <option value="Washroom">Washroom</option>
               <option value="WaterFountain">Water Fountain</option>
               <option value="Microwave">Microwave</option>
             </select>
-            <select value={requestType} onChange={(e) => setRequestType(e.target.value)}>
-              <option value="Update">Update</option>
-              <option value="Removal">Removal</option>
-              <option value="Add New">Add New</option>
-            </select>
-            <textarea
-                onChange={(e) => setDescription(e.target.value)}
+
+          <select value={requestType} onChange={(e) => setRequestType(e.target.value)}>
+            <option value="Update">Update</option>
+            <option value="Removal">Removal</option>
+            <option value="Add New">Add New</option>
+          </select>
+          <textarea
+              onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
                 rows={4}
                 cols={40}
