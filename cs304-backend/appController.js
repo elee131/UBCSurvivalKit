@@ -174,8 +174,6 @@ function handleInsertResult(insertResult, res) {
     } else {
         res.status(500).json({success: false, message: insertResult.message});
     }
-
-    res.setHeader('Content-Type', 'application/json');
 }
 
 function handleQueryResult(queryResult, res) {

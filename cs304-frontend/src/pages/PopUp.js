@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import './popup.css';
 
 function MakeReview({ utilityID, userID }) {
   const [cleanliness, setCleanliness] = useState(0);
@@ -8,6 +9,8 @@ function MakeReview({ utilityID, userID }) {
   const [accessibility, setAccessibility] = useState(0);
   const [description, setDescription] = useState("");
 
+  console.log("utilityID in make review:" + utilityID);
+  console.log("userID in make reivew:" + userID);
   const makeReview = async (utilityID, userID) => {
     if (!cleanliness || !functionality || !accessibility) {
       alert("Please rate all features from 1 to 5.");
@@ -97,11 +100,12 @@ function PopUp({ util }) {
   const [detailedInfo, setDetailedInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviewList, setReviewList] = useState([]);
 
   const fetchDetailedInfo = async (utilityID) => {
     try {
       const response = await fetch(`/detailed-util-info?utilityID=${utilityID}`);
-      const reviews = await fetch(`/reviews-for-util?utilityID"=${utilityID}`);
+      const reviews = await fetch(`/reviews-for-util?utilityID=${utilityID}`);
       if (!response.ok || !reviews.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
       }
@@ -109,6 +113,18 @@ function PopUp({ util }) {
       const reviewData = await reviews.json();
       console.log(reviewData);
       console.log(reviewData.data);
+
+      const reviewList = reviewData.data.map(([cleanliness, functionality, accessibility, reviewID, utilityID, userID, description, averageRating]) => ({
+        reviewID,
+        utilityID,
+        userID,
+        cleanliness,
+        functionality,
+        accessibility,
+        description,
+        averageRating
+      }));
+      setReviewList(reviewList);
 
       let detailedData;
       if (utilityID >= 10000000 && utilityID < 20000000) {
@@ -125,7 +141,6 @@ function PopUp({ util }) {
           isRecommended: data.data[0][9],
           floor: data.data[0][10],
           locationDescription: data.data[0][11],
-          //reviews: data.data[0][12] || [], // Assuming reviews are at index 12
         };
       } else if (utilityID >= 20000000 && utilityID < 30000000) {
         detailedData = {
@@ -139,7 +154,6 @@ function PopUp({ util }) {
           isRecommended: data.data[0][7],
           floor: data.data[0][8],
           locationDescription: data.data[0][9],
-          //reviews: data.data[0][10] || [], // Assuming reviews are at index 10
         };
       } else {
         detailedData = {
@@ -154,7 +168,6 @@ function PopUp({ util }) {
           isRecommended: data.data[0][8],
           floor: data.data[0][9],
           locationDescription: data.data[0][10],
-          //reviews: data.data[0][11] || [], // Assuming reviews are at index 11
         };
       }
       setDetailedInfo(detailedData);
@@ -203,25 +216,29 @@ function PopUp({ util }) {
                           <p>Has Hot Water: {detailedInfo.hasHotWater.toUpperCase() === "TRUE" ? "Yes" : "No"}</p>
                       )}
                       <p>Operating Hours: {detailedInfo.OperatingHour}</p>
-                      <MakeReview utilityID={util.utilityID} userID={0 /*TEST USERID*/} />
+                      <MakeReview utilityID={util.utilityID} userID={0 /*TEST USERID*/}/>
                       <h3>Reviews:</h3>
-                      {/*{detailedInfo.reviews.length > 0 ? (*/}
-                      {/*    detailedInfo.reviews.map((review) => (*/}
-                      {/*        <div key={review.id}>*/}
-                      {/*          <h5>Rating: {review.rating}</h5>*/}
-                      {/*          <p>{review.description}</p>*/}
-                      {/*        </div>*/}
-                      {/*    ))*/}
-                      {/*) : (*/}
-                      {/*    <p>No reviews available</p>*/}
-                      {/*)}*/}
+                      <div className="reviews-container">
+                        {reviewList.length > 0 ? (
+                            reviewList.map((review) => (
+                                <div key={review.reviewID} className="review">
+                                  <h5>Rating: {review.averageRating}</h5>
+                                  <p>{review.description}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No reviews available</p>
+                        )}
+                      </div>
                     </div>
                 )}
               </div>
+
           )}
         </Popup>
       </div>
   );
 }
+
 
 export default PopUp;

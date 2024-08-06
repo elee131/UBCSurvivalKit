@@ -204,7 +204,7 @@ async function fetchReviewsForUtil(utilityID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT *
-            FROM REVIEW r
+            FROM REVIEW r NATURAL JOIN AVERAGERATING 
             WHERE r.utilityID = :utilityID`,
             [utilityID]
         );
@@ -424,7 +424,7 @@ async function newUser(userID, username, email, password, isAdmin) {
         return {status: 'success', message: 'New user account created successfully.'};
 
     }).catch(() => {
-        return {status: 'false', message: 'Had error while inserting user:', error };
+        return {status: 'false', message: 'Had error while inserting user' };
     });
 }
 
