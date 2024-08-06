@@ -415,7 +415,22 @@ VALUES
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
+(6000, 'Espresso');
+
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
+(6000, 'London Fog');
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
+(6000, 'Dark Roast');
+
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
 (6001, 'Espresso');
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
+(6001, 'London Fog');
+
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
@@ -424,6 +439,9 @@ VALUES
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
 (6003, 'Dark Roast');
+INSERT INTO Serves(cafeID, drinkName)
+VALUES
+(6003, 'Iced Latte');
 
 INSERT INTO Serves(cafeID, drinkName)
 VALUES
