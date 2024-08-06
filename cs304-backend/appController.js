@@ -258,7 +258,8 @@ router.post("/insert-microwave", async (req, res) => {
 router.post("/insert-review", async (req, res) => {
     const {  utilityID, userID, cleanliness, functionality, accessibility, description } = req.body;
 
-    const currMaxReviewID = await appService.findMaxReviewID(utilityID);
+    const curr = await appService.findMaxReviewID(utilityID);
+    const currMaxReviewID = curr.data;
 
     if (currMaxReviewID === undefined || currMaxReviewID === null) {
         return res.status(400).json({ success: false, message: "Failed to find suitable reviewID" });
