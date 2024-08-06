@@ -150,6 +150,20 @@ router.post("/insert-waterfountain", async (req, res) => {
     handleInsertResult(insertResult, res);
 });
 
+router.post("/insert-location", async (req, res) => {
+    const newLocationID = await appService.findMaxLocationID();
+
+    if (newLocationID === undefined || newLocationID === null) {
+        return res.status(400).json({ success: false, message: "Failed to find suitable locationID" });
+    }
+
+    const { floor, locationDescription } = req.body;
+    const insertResult = await appService.insertLocation()
+    (newLocationID + 1, floor, locationDescription);
+
+    handleInsertResult(insertResult, res);
+});
+
 router.post("/new-user", async(req, res) =>{
     const { username, email, password, isAdmin} = req.body;
     const currMaxUserID = await appService.findMaxUserID();

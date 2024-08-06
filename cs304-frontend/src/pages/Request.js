@@ -1,13 +1,29 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getCookie, setCookie} from './CookieHelper';
 import "./Style.css";
+
 
 function App() {
   const [building, setBuilding] = useState("");
+  const [userID, setUserID] = useState(null);
   const [util, setUtil] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [requestType, setRequestType] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const cookieUserID = getCookie("userID");
+
+    if (!cookieUserID) {
+      console.log("I am here!");
+      navigate("/login");
+      return;
+    }
+    setUserID(cookieUserID);
+  }, [navigate]);
+
 
   const makeRequest = async (userID) => {
     if (!building || !util || !description || !requestType) {
@@ -83,13 +99,13 @@ function App() {
                 <input
                     type="file"
                     onChange={(e) => {
-                      setFile(e.target.files[0]); // Get the file object
+                      setFile(e.target.files[0]);
                     }}
                 />
                 {file && <img src={URL.createObjectURL(file)} alt="Selected file" />} {/* Show file preview */}
               </div>
               <div className="Login-submit">
-                <button onClick={() => makeRequest(0 /*TEST USERID*/)}>Submit Request</button>
+                <button onClick={() => makeRequest(userID)}>Submit Request</button>
               </div>
             </div>
           </header>

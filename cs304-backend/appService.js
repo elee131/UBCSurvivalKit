@@ -423,6 +423,27 @@ async function utilsWithMinNumOfReviews(minReviewNum) {
     });
 }
 
+async function insertLocation(locationID,floor, description) {
+    return await withOracleDB(async (connection) => {
+
+        const result = await connection.execute(
+            `INSERT INTO LOCATION (locationID,floor, description)
+            VALUES (:locationID,:floor, :description)`,
+            [locationID,floor, description],
+
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            return {status: 'failure', message:'Failed to create location with given information.'};
+        }
+        return {status: 'success', message: 'New location created successfully.'};
+
+    }).catch(() => {
+        return {status: 'false', message: 'Had error while inserting location' };
+    });
+}
+
 async function newUser(userID, username, email, password, isAdmin) {
     return await withOracleDB(async (connection) => {
 
@@ -713,6 +734,7 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
 }
 
 
+
 async function deleteReviews(reviewID, utilityID) {
     return await withOracleDB(async (connection) => {
         console.log(reviewID, utilityID);
@@ -923,5 +945,6 @@ module.exports = {
     fetchAllRequests,
     findMaxReviewID,
     findMaxLocationID,
-    fetchAllDrinkNames
+    fetchAllDrinkNames,
+    insertLocation
 };
