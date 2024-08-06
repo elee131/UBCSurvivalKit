@@ -216,6 +216,15 @@ router.post("/insert-washroom", async (req, res) => {
 
 });
 
+router.get("/get-max-locationID", async (req, res) => {
+   const result = await appService.findMaxLocationID();
+   handleQueryResult(result, res);
+});
+
+router.get("/all-drinks", async (req, res) => {
+   const result = await appService.fetchAllDrinkNames();
+   handleQueryResult(result, res)
+});
 
 router.post("/insert-microwave", async (req, res) => {
     const newUtilID = await appService.findMaxUtilityID('MICROWAVE');
@@ -249,6 +258,8 @@ router.post("/insert-review", async (req, res) => {
     handleInsertResult(insertResult, res);
 });
 
+
+
 router.post("/insert-request", async (req, res) => {
     const { requestDate, status, requestDescription, requestType, amenityType,
         buildingName, userID,imageURL } = req.body;
@@ -261,7 +272,7 @@ router.post("/insert-request", async (req, res) => {
     const insertResult = await appService.insertRequest(currMaxRequestID + 1, requestDate, status, requestDescription, requestType, amenityType,
         buildingName, userID,imageURL);
     handleInsertResult(insertResult, res);
-})
+});
 
 
 
