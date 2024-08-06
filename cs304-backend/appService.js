@@ -232,6 +232,22 @@ async function fetchReviewsForUser(userID) {
     });
 }
 
+async function fetchAllDrinkNames() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT name
+            FROM DRINK r`
+
+        );
+        return {status: 'success', data: result.rows, message:"Query successfully executed."};
+
+    }).catch(() => {
+        return {status: 'error', data: [], message:"Error executing query."};
+
+    });
+}
+
+
 async function fetchRequestsForUser(userID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -507,6 +523,19 @@ async function findMaxCafeID() {
     });
 }
 
+async function findMaxLocationID() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT MAX(locationID) as maxID
+            FROM LOCATION`
+        );
+        return result.rows[0][0];
+    }).catch((error) => {
+        console.error(error);
+        throw new Error("Failed to find max locationID");
+    });
+}
+
 async function findMaxRequestID() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -531,12 +560,13 @@ async function findMaxReviewID(utilityID) {
         );
         console.log(result);
         const maxID = result.rows[0][0];
-        return maxID;
+        return {status: 'success', data: maxID, message: "found max locationID"};
     }).catch((error) => {
         console.error(error);
-        throw new Error("Failed to find max reviewID");
+        return {status: 'error', message: "failed to find max locationID"};
     });
 }
+
 
 async function findMaxUserID() {
     return await withOracleDB(async (connection) => {
@@ -888,5 +918,7 @@ module.exports = {
     fetchReviewsForUser,
     fetchRequestsForUser,
     fetchAllRequests,
-    findMaxReviewID
+    findMaxReviewID,
+    findMaxLocationID,
+    fetchAllDrinkNames
 };
