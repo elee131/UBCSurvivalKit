@@ -19,11 +19,32 @@ const testList = [
 function UtilPopUp(props) {
   const request = props.request;
   const [building, setBuilding] = useState(request.building);
-  const [location, setLocation] = useState("");
-  const [util, setUtil] = useState(request.util);
+  const [location, setLocation] = useState(0);
+  const [util, setUtil] = useState(request.amenityType);
   const [desc, setDesc] = useState(request.desc);
 
+  // const getLocationID = async () => {
+  //   try {
+  //     const response = await fetch("/get-max-locationID", {
+  //       method: "GET",
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Network response was not ok: ${response.statusText}`);
+  //     }
+  //     const result = await response.json();
+  //     console.log(result);
+  //     if (result.success) {
+  //       console.log(`result.data[0]: ${result.data[0]}`);
+  //       setLocation(result.data[0]);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const addRequest = async () => {
+    // await getLocationID();
     if (util === "waterfountain") {
       // insert a waterfountain
       try {
@@ -115,6 +136,7 @@ function UtilPopUp(props) {
       alert(
         "Type of amenity is not one of waterfountain, microwave, or washroom"
       );
+      console.log(request.amenityType);
     }
   };
 
@@ -125,7 +147,7 @@ function UtilPopUp(props) {
           <div className="modal">
             <input
               type="text"
-              value={request.buildingName}
+              value={building}
               placeholder="Building Code"
               onChange={(e) => {
                 setBuilding(e.target.value);
@@ -133,7 +155,7 @@ function UtilPopUp(props) {
             />
             <input
               type="number"
-              value={0}
+              value={location}
               placeholder="Location ID"
               onChange={(e) => {
                 setLocation(e.target.value);
@@ -141,14 +163,14 @@ function UtilPopUp(props) {
             />
             <input
               type="text"
-              value={request.amenityType}
+              value={util}
               placeholder="type"
               onChange={(e) => {
                 setUtil(e.target.value);
               }}
             />
             <textarea
-              value={request.description}
+              value={desc}
               placeholder="Description"
               onChange={(e) => {
                 setDesc(e.target.value);
@@ -213,6 +235,7 @@ function Request(prop) {
 
 function App() {
   const [requests, setRequests] = useState([]);
+  const [update, setUpdate] = useState(true);
   const fetchRequests = async () => {
     try {
       const response = await fetch("/all-requests", {
@@ -250,7 +273,7 @@ function App() {
 
   useEffect(() => {
     fetchRequests();
-  });
+  }, [update]);
 
   return (
     <div>
