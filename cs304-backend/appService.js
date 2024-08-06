@@ -431,7 +431,7 @@ async function newUser(userID, username, email, password, isAdmin) {
 async function logIn(email, password) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-           `SELECT userId, username
+           `SELECT userId, username, isAdmin
             FROM USERINFO
             WHERE email = :email AND password = :password`,
             [email, password]
