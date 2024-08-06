@@ -1,103 +1,74 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Style.css";
 import "./Utilities.css";
-import CafePopUp from "./CafePopUp";
 
-const testCafe = {
-  id: 1,
-  name: "Starbuck",
-  building: "iccs",
-  location: "over there",
-  drinks: ["latte", "london fog", "dark roast"],
-};
 
-const testCafes = [
-  {
-    id: 1,
-    name: "Starbuck",
-    building: "iccs",
-    location: "over there",
-  },
-  {
-    id: 2,
-    name: "Tim Hortons",
-    building: "heb",
-    location: "where the tim hortons is",
-  },
-  {
-    id: 3,
-    name: "Tim Hortons",
-    building: "fsc",
-    location: "Right behind you",
-  },
-  {
-    id: 4,
-    name: "Java",
-    building: "iccs",
-    location: "no way like the computing language?",
-  },
-  {
-    id: 5,
-    name: "Starbuck",
-    building: "nest",
-    location: "you know i think it's actually starbucks with an s",
-  },
-  {
-    id: 6,
-    name: "coffee place",
-    building: "eosc",
-    location: "mmm cofffeee",
-  },
-];
-
-function Cafe(prop) {
-  const cafe = prop.cafe;
+function Cafe({ cafe }) {
   return (
-    <div>
+    <div className="cafe">
       <p>Name: {cafe.name}</p>
       <p>
-        Building: {cafe.building} | Location: {cafe.location}
+        Building: {cafe.buildingCode} | Operating Hours: {cafe.operatingHours}
       </p>
-      <label>The popup is just a placeholder</label>
-      <CafePopUp cafe={testCafe} />
     </div>
   );
 }
 
 function App() {
   const [buildingCode, setBuildingCode] = useState("");
+  const [cafes, setCafes] = useState([]);
+
+  const fetchCafes = async () => {
+    try {
+      const response = await fetch(`/all-cafes`);
+      const result = await response.json();
+      const data = result.data.map(
+        ([name, operatingHours, buildingCode]) => ({
+          name,
+          operatingHours,
+          buildingCode,
+        })
+      );
+      setCafes(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchCafes();
+  }, []);
+
   return (
-    <div className = "cafe-container">
+    <div className="cafe-container">
       <div className="Navbar">
-         <Link to="/" style={{ textDecoration: 'none',  color: "black"}}>Home</Link>
+        <Link to="/" style={{ textDecoration: 'none', color: "black" }}>
+          Home
+        </Link>
       </div>
 
-      <div className = "cafe-building">
-      <label>
-        Building:
-        <input
-          type="text"
-          value={buildingCode}
-          onChange={(e) => {
-            setBuildingCode(e.target.value);
-          }}
-        />
-      </label>
-
+      <div className="cafe-building">
+        <label>
+          Building:
+          <input
+            type="text"
+            value={buildingCode}
+            onChange={(e) => {
+              setBuildingCode(e.target.value);
+            }}
+          />
+        </label>
       </div>
 
-      <div className = "cafes">
-      {testCafes.map((cafe) => {
-        if (
-          buildingCode !== "" &&
-          buildingCode.toLowerCase() !== cafe.building
-        ) {
-          return null;
-        }
-        return <div className = "cafe"><Cafe cafe={cafe} /> </div>;
-      })}
-
+      <div className="cafes">
+        {cafes.map((cafe) => {
+          if (buildingCode !== "" && buildingCode.toLowerCase() !== cafe.buildingCode.toLowerCase()) {
+            return null;
+          }
+          return <Cafe key={cafe.cafeID} cafe={cafe} />;
+        })}
       </div>
     </div>
   );

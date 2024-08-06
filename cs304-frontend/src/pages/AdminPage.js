@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import "./Style.css";
 import { useEffect, useState } from "react";
+import { getCookie, setCookie} from './CookieHelper';
 
 const testList = [
   {
@@ -23,6 +24,7 @@ function UtilPopUp(props) {
   const [util, setUtil] = useState(request.amenityType);
   const [desc, setDesc] = useState(request.desc);
 
+
   // const getLocationID = async () => {
   //   try {
   //     const response = await fetch("/get-max-locationID", {
@@ -42,6 +44,7 @@ function UtilPopUp(props) {
   //     console.error(error);
   //   }
   // };
+
 
   const addRequest = async () => {
     // await getLocationID();
@@ -236,6 +239,18 @@ function Request(prop) {
 function App() {
   const [requests, setRequests] = useState([]);
   const [update, setUpdate] = useState(true);
+  const navigate = useNavigate();
+
+    useEffect(() => {
+        const isAdmin = getCookie("isAdmin");
+        console.log(isAdmin)
+        if (isAdmin === "false") {
+          navigate("/");
+          return;
+        }
+      }, [navigate]);
+
+
   const fetchRequests = async () => {
     try {
       const response = await fetch("/all-requests", {
