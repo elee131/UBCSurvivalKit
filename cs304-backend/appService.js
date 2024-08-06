@@ -187,7 +187,7 @@ async function detailedUtilInfo(utilityID) {
 
         query = `SELECT *
             FROM UTILITY NATURAL JOIN ` + table +
-            ` NATURAL JOIN HOURS NATURAL JOIN RATING
+            ` NATURAL JOIN HOURS NATURAL JOIN RATING NATURAL JOIN LOCATION
             WHERE utilityID = :utilityID `;
 
         const result = await connection.execute(query, [utilityID]);
@@ -238,7 +238,8 @@ async function fetchRequestsForUser(userID) {
             `SELECT *
             FROM Request r
             WHERE r.userID = :userID`,
-            [utilityID]
+            [userID]
+
         );
         return {status: 'success', data: result.rows, message:"Query successfully executed."};
 
@@ -368,6 +369,7 @@ async function findUtilsAtBuilding(buildingCode, wrClicked, mClicked, wfClicked)
     })
 }
 
+
 async function findCafesAtBuilding(buildingCode) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -429,7 +431,7 @@ async function newUser(userID, username, email, password, isAdmin) {
 async function logIn(email, password) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `SELECT * 
+            `SELECT *
             FROM USERINFO
             WHERE email = :email AND password = :password`,
             [email, password]
@@ -594,7 +596,7 @@ async function findCafesWithDrinks(selectedDrinks) {
         WHERE NOT EXISTS (
             (SELECT name FROM Drink WHERE name IN (${drinksList}))
             MINUS
-            (SELECT s.drinkName 
+            (SELECT s.drinkName
              FROM Serves s
              WHERE s.cafeID = c.cafeID)
         )
@@ -617,7 +619,7 @@ async function insertReview(reviewID, utilityID, userID, cleanliness, functional
         const result = await connection.execute(
             `INSERT INTO Review
             (reviewID, utilityID, userID, cleanliness, functionality, accessibility, description)
-            VALUES 
+            VALUES
             (:reviewID, :utilityID, :userID, :cleanliness, :functionality, :accessibility, :description)`,
             [reviewID, utilityID, userID, cleanliness, functionality, accessibility, description],
             { autoCommit: true }
@@ -639,10 +641,10 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `INSERT INTO Request
-                (requestID, requestDate, status, requestDescription, 
+                (requestID, requestDate, status, requestDescription,
                  requestType, amenityType, buildingName, userID, imageURL)
-                VALUES 
-                    (:requestID, TO_DATE(:requestDate, 'YYYY-MM-DD'), :status, 
+                VALUES
+                    (:requestID, TO_DATE(:requestDate, 'YYYY-MM-DD'), :status,
                      :requestDescription, :requestType, :amenityType, :buildingName, :userID, :imageURL)`,
             [requestID, requestDate, status, requestDescription, requestType,
                 amenityType, buildingName, userID, imageURL],
@@ -664,6 +666,7 @@ async function insertRequest(requestID, requestDate, status, requestDescription,
 
 async function deleteReviews(reviewID, utilityID) {
     return await withOracleDB(async (connection) => {
+        console.log(reviewID, utilityID);
         const result = await connection.execute(
             `DELETE FROM Review WHERE reviewID = :reviewID AND utilityID = :utilityID`,
             [reviewID, utilityID],
@@ -791,9 +794,9 @@ async function findBestRatedBuilding() {
             `SELECT t.buildingCode, t.average
              FROM (
                   SELECT buildingCode, AVG(overallRating) as average
-                  FROM Building NATURAL JOIN Utility 
+                  FROM Building NATURAL JOIN Utility
                   GROUP BY buildingCode) t
-             WHERE t.average in (SELECT MAX(s.average) 
+             WHERE t.average in (SELECT MAX(s.average)
                                     FROM (
                                            SELECT buildingCode, AVG(overallRating) as average
                                            FROM Building NATURAL JOIN Utility

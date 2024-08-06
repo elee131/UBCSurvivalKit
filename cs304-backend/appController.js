@@ -191,7 +191,6 @@ function handleQueryResult(queryResult, res) {
         res.status(500).json({success: false, message: queryResult.message});
     }
 
-    res.setHeader('Content-Type', 'application/json');
 }
 
 
@@ -270,6 +269,7 @@ router.post("/insert-request", async (req, res) => {
 router.delete("/delete-review/:reviewID/:utilityID", async (req, res) => {
     const { reviewID, utilityID } = req.params;
     const deleteResult = await appService.deleteReviews(reviewID, utilityID);
+    console.log(reviewID, utilityID);
     if (deleteResult.status === 'success') {
                 res.status(200).json({ success: true, message: deleteResult.message });
             } else if (deleteResult.status === 'failure') {

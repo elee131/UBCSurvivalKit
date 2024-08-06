@@ -1,70 +1,248 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 
-const testReviews = [
-  {
-    utilID: 1,
-    reviewID: 1,
-    rating: 5,
-    description: "Great",
-  },
-  {
-    utilID: 1,
-    reviewID: 2,
-    rating: 5,
-    description: "Changed my life :D",
-  },
-  {
-    utilID: 2,
-    reviewID: 8,
-    rating: 2,
-    description: "Ate my phone :(",
-  },
-  {
-    utilID: 3,
-    reviewID: 4,
-    rating: 4,
-    description: "Craig was there.",
-  },
-  {
-    utilID: 4,
-    reviewID: 9,
-    rating: 1,
-    description: "Made me look for its 8 pages",
-  },
-];
-
 function App() {
+  const [userID, setUserID] = useState(0);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [requests, setRequests] = useState([])
+
+
+
+      const fetchReviews = async () => {
+        if (userID === undefined){
+        setReviews([]);
+        }
+
+        try {
+          const response = await fetch(`/reviews-for-user?userID=${userID}`);
+
+          if (!response.ok) {
+            throw new Error('Error found while retrieving the response');
+          }
+
+          const result = await response.json();
+             const data = result.data.map(([reviewID, utilityID, userID, cleanliness, functionality, accessibility, description]) => ({
+              reviewID,
+              utilityID,
+              userID,
+              cleanliness,
+              functionality,
+              accessibility,
+              description,
+            }));
+          setReviews(data);
+          console.log(data);
+        } catch (error) {
+            console.log(error.message);
+
+        }
+      };
+
+      const fetchRequests = async () => {
+              if (userID === undefined){
+                  setRequests([]);
+              }
+
+              try {
+                const response = await fetch(`/requests-for-user?userID=${userID}`);
+
+                if (!response.ok) {
+                  throw new Error('Error found while retrieving the response');
+                }
+
+                  const result = await response.json();
+                  const data = result.data.map(([requestID, requestDate, status, requestDescription, requestType, amenityType, buildingName, userID, imageURL]) => ({
+                          requestID,
+                          buildingName,
+                          amenityType,
+                          requestType,
+                          status,
+                          requestDescription,
+                  }));
+                setRequests(data);
+                console.log(data);
+              } catch (error) {
+                 console.log(error.message);
+
+              }
+            };
+
+
+  useEffect(() => {
+      fetchReviews();
+      fetchRequests();
+    }, [userID]);
+
+
+
+  const handleEmailChange = async () => {
+    if (!email) {
+      alert("Email cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await fetch("/update-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newEmail: email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Email updated successfully");
+      } else {
+        alert("Failed to update email: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
+
+    setEmail("");
+  };
+
+  const handleUsernameChange = async () => {
+    if (!username) {
+      alert("Username cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await fetch("/update-username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newName: username }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Username updated successfully");
+      } else {
+        alert("Failed to update username: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
+
+    setUsername("");
+  };
+
+  const handlePasswordChange = async () => {
+    if (!password) {
+      alert("Password cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await fetch("/update-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID, newPassword: password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Password updated successfully");
+      } else {
+        alert("Failed to update password: " + data.message);
+      }
+    } catch (error) {
+      alert("Internal server error");
+    }
+
+    setPassword("");
+  };
+
+
+    const deleteReviews = async(reviewID, utilityID) => {
+
+    try {
+          console.log(reviewID, utilityID);
+          const response = await fetch(`/delete-review/${reviewID}/${utilityID}`, {
+            method: 'DELETE',
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            await fetchReviews();
+            alert(result.message);
+          } else {
+            alert(result.message);
+          }
+        } catch (error) {
+          console.error('Error deleting review:', error);
+          alert('Error deleting review');
+        }
+      };
+
+
+    const deleteRequests = async(requestID) => {
+        try {
+              console.log(requestID);
+              const response = await fetch(`/delete-request/${requestID}`, {
+                method: 'DELETE',
+              });
+              const result = await response.json();
+
+              if (result.success) {
+                await fetchRequests();
+                alert(result.message);
+              } else {
+                alert(result.message);
+              }
+            } catch (error) {
+              console.error('Error deleting request:', error);
+              alert('Error deleting request');
+            }
+          };
+
+
+   const deleteAccount = async(userID) => {
+        try {
+              const response = await fetch(`/delete-account/${userID}`, {
+                method: 'DELETE',
+              });
+              const result = await response.json();
+
+              if (result.success) {
+                alert(result.message);
+                await setUserID(undefined)
+              } else {
+                alert(result.message);
+              }
+            } catch (error) {
+              console.error('Error deleting request:', error);
+              alert('Error deleting request');
+            }
+          };
+
+
   return (
     <div>
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
-      <p>
-        Until I figure out how to determine which user is currently viewing the
-        page this won't be able to do much for now, probably gonna use cookies
-        tho
-      </p>
       <div>
         <label>
           Change email:
           <input
-            type="text"
+            type="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <button
-            onClick={() => {
-              alert(`setting email to ${email}`);
-            }}
-          >
-            Submit
-          </button>
+          <button onClick={handleEmailChange}>Submit</button>
         </label>
       </div>
       <div>
@@ -73,56 +251,59 @@ function App() {
           <input
             type="text"
             value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+            onChange={(e) => setUsername(e.target.value)}
           />
-          <button
-            onClick={() => {
-              alert(`setting username to ${username}`);
-            }}
-          >
-            Submit
-          </button>
+          <button onClick={handleUsernameChange}>Submit</button>
         </label>
       </div>
       <div>
         <label>
           Change password:
           <input
-            type="text"
+            type="password"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          <button
-            onClick={() => {
-              alert(`setting password to ${password}`);
-            }}
-          >
-            Submit
-          </button>
+          <button onClick={handlePasswordChange}>Submit</button>
         </label>
       </div>
-      {testReviews.map((review) => (
-        <div>
-          <p> Review for util: {review.utilID} </p>
-          <p> Rating: {review.rating} </p>
-          <p> Description: {review.description} </p>
+      {reviews.map((review) => (
+        <div key={review.reviewID}>
+          <p>Review for util: {review.utilityID}</p>
+          <p>Cleanliness: {review.cleanliness}</p>
+          <p>Functionality: {review.functionality}</p>
+          <p>Accessibility: {review.accessibility}</p>
+          <p>Description: {review.description}</p>
           <button
             onClick={() => {
-              alert(
-                `deleting review with util id: ${review.utilID}; and review id: ${review.reviewID}`
-              );
+              deleteReviews(review.reviewID, review.utilityID)
             }}
           >
-            {" "}
-            Delete Review{" "}
+            Delete Review
           </button>
-          <p> -------- </p>
+          <p>--------</p>
         </div>
       ))}
+
+        {requests.map((request) => (
+              <div key={request.requestID}>
+                <p>Request</p>
+                <p>Request Type: {request.requestType}</p>
+                <p>Amenity Type: {request.amenityType}</p>
+                <p>Status: {request.status}</p>
+                <p>Description: {request.requestDescription}</p>
+                <button
+                  onClick={() => {
+                    deleteRequests(request.requestID)
+                  }}
+                >
+                  Delete Request
+                </button>
+                <p>--------</p>
+              </div>
+            ))}
+
+       <button onClick={() => {deleteAccount(userID)}}>Delete Account</button>
     </div>
   );
 }
