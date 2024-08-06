@@ -15,7 +15,7 @@ function App() {
       return;
     }
 
-    const today = new Date().toISOString();
+    const today = new Date().toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
 
     try {
       const response = await fetch("/insert-request", {
@@ -40,6 +40,7 @@ function App() {
       } else {
         alert("Failed to submit request: " + data.message);
       }
+
     } catch (error) {
       alert("Internal server error: " + error);
     }

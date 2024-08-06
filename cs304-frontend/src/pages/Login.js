@@ -4,15 +4,18 @@ import "./Style.css";
 import { setCookie } from "./CookieHelper";
 
 function App() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
     try {
       const response = await fetch("/log-in", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          username: username,
+          email: email,
           password: password,
         }),
       });
@@ -23,13 +26,14 @@ function App() {
       console.log(result);
       if (result.success) {
         // transform data
-        setCookie("userID", result.data.userID);
+        setCookie("userID", result.data[0][0]);
+        setCookie("isAdmin", result.data[0][2]);
         alert("Success!");
       } else {
         console.error("Error from server: ", result.message);
       }
     } catch (error) {
-      console.error("Error fetching utilities:", error);
+      console.error("Error:", error);
       alert("error: " + error);
     }
   };
@@ -44,9 +48,9 @@ function App() {
           <p> Welcome Back! </p>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username or Email it's undecided :/"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
           />
           <input
             type="text"
@@ -58,7 +62,7 @@ function App() {
             <div className="Login-submit">
               <button
                 onClick={() => {
-                  alert("username: " + username + "\npassword: " + password);
+                  alert("username: " + email + "\nEmail: " + password);
                   login();
                 }}
               >
