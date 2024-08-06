@@ -1,11 +1,39 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
-import { getCookie } from "./CookieHelper";
+import { setCookie } from "./CookieHelper";
 
 function App() {
-  const [username, setUsername] = useState(getCookie("username"));
-  const [password, setPassword] = useState(getCookie("password"));
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = async () => {
+    try {
+      const response = await fetch("/log-in", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      const result = await response.json();
+      console.log(result);
+      if (result.success) {
+        // transform data
+        setCookie("userID", result.data.userID);
+        alert("Success!");
+      } else {
+        console.error("Error from server: ", result.message);
+      }
+    } catch (error) {
+      console.error("Error fetching utilities:", error);
+      alert("error: " + error);
+    }
+  };
+
   return (
     <div>
       <div className="Navbar">
