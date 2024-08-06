@@ -28,6 +28,9 @@ function App() {
 
   const [averageRatings, setAverageRatings] = useState([]);
   const [minimumReviewUtil, setMinimumReviewUtil] = useState([]);
+  const [bestBuildings, setBestBuildings] = useState([]);
+
+
   const [showDrinks, setShowDrinks] = useState(true);
   const [wantedDrinks, setWantedDrinks] = useState("");
 
@@ -58,6 +61,23 @@ function App() {
       console.log(error.message);
     }
   };
+
+
+  const fetchBestRatedBuilding = async () => {
+  try{
+   const response = await fetch(`/best-rated-building`);
+   const result = await response.json();
+  if (result.success) {
+          const data = result.data;
+          setBestBuildings(data);
+          console.log(data);
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
   return (
     <div>
@@ -110,16 +130,20 @@ function App() {
       <div>
         <h5>Find building with highest average util rating</h5>
         <button
-          onClick={() => {
-            alert(
-              "sending api call to find the building with highest average util rating"
-            );
-          }}
+          onClick={fetchBestRatedBuilding}
         >
-          Find Building with highest average util ratings
+          Find Building with the highest average Utility Rating
         </button>
-        <p>Here they would be</p>
-      </div>
+       <div>
+          {bestBuildings.map(([buildingCode, rating]) => (
+                          <div key={buildingCode} className="util-item">
+                            <p><strong>Building Code:</strong> {buildingCode}</p>
+                            <p><strong>Rating:</strong> {rating}</p>
+                          </div>
+                        ))}
+                      </div>
+             </div>
+
       <div>
         <h5>Find cafes with these drinks:</h5>
         <button
