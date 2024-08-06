@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
-// TODO: Aggregation Group By: find average rating of utilities in buildings
-// TODO: Aggregation Having: display utilities with x amount of reviews
-// TODO: Nested Aggregation with Group By: Find building with highest rating of utils
-// TODO: Division: Cafes with all drinks a user wants
+import "./Utilities.css";
 
 const determineType = (id) => {
   if (id >= 10000000 && id < 20000000) return "Washroom";
@@ -15,31 +11,20 @@ const determineType = (id) => {
 
 function App() {
   const [minRatings, setMinRatings] = useState(0);
-  const drinks = [
-    "capuccino",
-    "latte",
-    "dark roast",
-    "london fog",
-    "water",
-    "liquid",
-    "creatine",
-  ];
-
-
   const [averageRatings, setAverageRatings] = useState([]);
   const [minimumReviewUtil, setMinimumReviewUtil] = useState([]);
   const [bestBuildings, setBestBuildings] = useState([]);
+  const [cafeWithDrinks, setCafeWithDrinks] = useState([]);
 
+//  const [showDrinks, setShowDrinks] = useState(true);
 
-  const [showDrinks, setShowDrinks] = useState(true);
   const [wantedDrinks, setWantedDrinks] = useState("");
 
   const fetchAverageRatings = async () => {
     try {
       const response = await fetch(`/average-rating`);
       const result = await response.json();
-      const data = result.data;
-      setAverageRatings(data);
+      setAverageRatings(result.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -49,11 +34,9 @@ function App() {
     try {
       const response = await fetch(`/util-with-numReviews?minReviewNum=${minRatings}`);
       const result = await response.json();
-
       if (result.success) {
-        const data = result.data;
-        setMinimumReviewUtil(data);
-        console.log(data);
+        setMinimumReviewUtil(result.data);
+        console.log(result.data);
       } else {
         alert(result.message);
       }
@@ -62,47 +45,58 @@ function App() {
     }
   };
 
-
   const fetchBestRatedBuilding = async () => {
-  try{
-   const response = await fetch(`/best-rated-building`);
-   const result = await response.json();
-  if (result.success) {
-          const data = result.data;
-          setBestBuildings(data);
-          console.log(data);
-        } else {
-          alert(result.message);
-        }
-      } catch (error) {
-        console.log(error.message);
+    try {
+      const response = await fetch(`/best-rated-building`);
+      const result = await response.json();
+      if (result.success) {
+        setBestBuildings(result.data);
+        console.log(result.data);
+      } else {
+        alert(result.message);
       }
-    };
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const fetchCafeWithDrinks = async () => {
+    try {
+      const response = await fetch(`/find-cafes-with-drink?selectedDrinks=${wantedDrinks}`);
+      const result = await response.json();
+      if (result.success) {
+        setCafeWithDrinks(result.data);
+        console.log(result.data);
+      } else {
+        setCafeWithDrinks([]);
+        alert(result.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
-    <div>
+    <div className = "features-container">
       <div className="Navbar">
         <Link to="/"> Home </Link>
       </div>
+
       <div>
         <h5>Find average rating of building utils</h5>
         <button onClick={fetchAverageRatings}>
           Find Average Rating of Buildings
         </button>
-
         <div>
           {averageRatings.map(([buildingName, rating], index) => (
             <div key={index} className="rating-item">
-              <p>
-                <strong>Building:</strong> {buildingName}
-              </p>
-              <p>
-                <strong>Rating:</strong> {rating.toFixed(2)}
-              </p>
+              <p><strong>Building:</strong> {buildingName}</p>
+              <p><strong>Rating:</strong> {rating.toFixed(2)}</p>
             </div>
           ))}
         </div>
       </div>
+
       <div>
         <h5>Find utils with minimum amount of ratings</h5>
         <label>
@@ -110,71 +104,56 @@ function App() {
           <input
             type="number"
             value={minRatings}
-            onChange={(e) => {
-              setMinRatings(e.target.value);
-            }}
+            onChange={(e) => setMinRatings(e.target.value)}
           />
           <button onClick={fetchMinReviewUtil}>Send Request</button>
         </label>
-
-       <div>
-                 {minimumReviewUtil.map(([utilityID, rating]) => (
-                   <div key={utilityID} className="util-item">
-                     <p><strong>Type:</strong> {determineType(utilityID)}</p>
-                     <p><strong>Rating:</strong> {rating}</p>
-                     <p><strong>Utility ID:</strong> {utilityID}</p>
-                   </div>
-                 ))}
-               </div>
-      </div>
-      <div>
-        <h5>Find building with highest average util rating</h5>
-        <button
-          onClick={fetchBestRatedBuilding}
-        >
-          Find Building with the highest average Utility Rating
-        </button>
-       <div>
-          {bestBuildings.map(([buildingCode, rating]) => (
-                          <div key={buildingCode} className="util-item">
-                            <p><strong>Building Code:</strong> {buildingCode}</p>
-                            <p><strong>Rating:</strong> {rating}</p>
-                          </div>
-                        ))}
-                      </div>
-             </div>
-
-      <div>
-        <h5>Find cafes with these drinks:</h5>
-        <button
-          onClick={() => {
-            setShowDrinks(!showDrinks);
-          }}
-        >
-          Show Available Drinks
-        </button>
-        <div hidden={!showDrinks}>
-          Available Drinks:
-          {drinks.map((drink, index) => (
-            <p key={index}>{drink}</p>
+        <div>
+          {minimumReviewUtil.map(([utilityID, rating]) => (
+            <div key={utilityID} className="util-item">
+              <p><strong>Type:</strong> {determineType(utilityID)}</p>
+              <p><strong>Rating:</strong> {rating}</p>
+              <p><strong>Utility ID:</strong> {utilityID}</p>
+            </div>
           ))}
         </div>
+      </div>
+
+      <div>
+        <h5>Find building with highest average util rating</h5>
+        <button onClick={fetchBestRatedBuilding}>
+          Find Building with the highest average Utility Rating
+        </button>
+        <div>
+          {bestBuildings.map(([buildingCode, rating]) => (
+            <div key={buildingCode} className="util-item">
+              <p><strong>Building Code:</strong> {buildingCode}</p>
+              <p><strong>Rating:</strong> {rating}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+
+<div>
         <div>Which Drinks do you want?</div>
         <input
           type="text"
           placeholder="Drinks"
-          onChange={(e) => {
-            setWantedDrinks(e.target.value);
-          }}
+          onChange={(e) => setWantedDrinks(e.target.value)}
         />
-        <button
-          onClick={() => {
-            alert(`Submitting api call with drinks: ${wantedDrinks}`);
-          }}
-        >
+        <button onClick={fetchCafeWithDrinks}>
           Submit
         </button>
-        <p>Results go here</p>
+        <div>
+       {cafeWithDrinks.map(([cafeId, name, hours, buildingCode]) => (
+          <div key={cafeId} className="cafe-item">
+         <p><strong>Cafe Name:</strong> {name}</p>
+         <p><strong>Building Code:</strong> {buildingCode}</p>
+         <p><strong>Operating Hours:</strong> {hours}</p>
+          </div>
+                  ))}
+       </div>
       </div>
     </div>
   );
