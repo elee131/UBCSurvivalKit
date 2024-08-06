@@ -13,7 +13,7 @@ function App() {
         <Link to="/user"> User Page</Link>
         <Link to="/admin"> Admin Page </Link>
         <Link to="/features"> Features </Link>
-        <Link to="/testing"> Test </Link>
+        {/* <Link to="/testing"> Test </Link> */}
       </header>
     </div>
   );
