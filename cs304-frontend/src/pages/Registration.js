@@ -12,11 +12,14 @@ function App() {
     try {
       const response = await fetch("/new-user", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           username: username,
           email: email,
           password: password,
-          isAdmin: false,
+          isAdmin: "false",
         }),
       });
       if (!response.ok) {
@@ -31,7 +34,7 @@ function App() {
         console.error("Error from server: ", result.message);
       }
     } catch (error) {
-      console.error("Error fetching utilities:", error);
+      console.error("Error:", error);
       alert("error: " + error);
     }
   };
