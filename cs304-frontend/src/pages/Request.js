@@ -17,7 +17,6 @@ function App() {
     const cookieUserID = getCookie("userID");
 
     if (!cookieUserID) {
-      console.log("I am here!");
       navigate("/login");
       return;
     }

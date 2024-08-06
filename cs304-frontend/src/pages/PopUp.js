@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Popup from "reactjs-popup";
 import { Link, useNavigate } from "react-router-dom";
 import { getCookie, setCookie} from './CookieHelper';
@@ -10,8 +10,7 @@ function MakeReview({ utilityID, userID }) {
   const [functionality, setFunctionality] = useState(0);
   const [accessibility, setAccessibility] = useState(0);
   const [description, setDescription] = useState("");
-  const [userID, setUserID] = useState(null);
-
+  const navigate = useNavigate();
 
   console.log("utilityID in make review:" + utilityID);
   console.log("userID in make reivew:" + userID);
