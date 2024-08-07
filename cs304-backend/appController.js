@@ -235,6 +235,15 @@ router.get("/get-max-locationID", async (req, res) => {
    handleQueryResult(result, res);
 });
 
+router.get("/generic-projection", async (req, res) => {
+    const {tableName, attributes} = req.query;
+    const attributeArray = Array.isArray(attributes) ? attributes : attributes ? attributes.split(',') : [];
+
+    const result = await appService.projectionQuery(tableName, attributeArray);
+    handleQueryResult(result, res);
+});
+
+
 router.get("/all-drinks", async (req, res) => {
    const result = await appService.fetchAllDrinkNames();
    handleQueryResult(result, res)

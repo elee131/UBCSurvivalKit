@@ -1,6 +1,7 @@
 // source code from: https://github.students.cs.ubc.ca/CPSC304/CPSC304_Node_Project
 const oracledb = require('oracledb');
 const loadEnvFile = require('./utils/envUtil');
+const {all} = require("express/lib/application");
 
 const envVariables = loadEnvFile('./.env');
 
@@ -278,6 +279,35 @@ async function fetchAllRequests() {
 
     });
 }
+
+async function projectionQuery(tableName, attributes) {
+    const tableNames = [
+        'Location', 'Building', 'Rating', 'Image', 'Drink', 'Utility', 'UserInfo',
+        'Request', 'Cafe', 'Serves', 'Hours', 'Washroom', 'Microwave',
+        'WaterFountain', 'AverageRating', 'Review'
+    ];
+
+    if (!tableNames.includes(tableName)) {
+        return { status: 'failure', data: [], message: "Invalid table name, try again." };
+    }
+
+    if (!attributes.every(attr => typeof attr === 'string' && /^[\w]+$/.test(attr))) {
+        return { status: 'failure', data: [], message: "Invalid attribute names." };
+    }
+
+    const attributeList = attributes.join(', ');
+    const query = `SELECT ${attributeList} FROM ${tableName}`;
+
+    try {
+        return await withOracleDB(async (connection) => {
+            const result = await connection.execute(query);
+            return { status: 'success', data: result.rows, message: "Query successfully executed." };
+        });
+    } catch (error) {
+        return { status: 'error', data: [], message: "Error executing query.", error: error.message };
+    }
+}
+
 
 
 async function fetchCafesListView() {
@@ -658,29 +688,61 @@ async function insertWashroom(utilityID, overallRating, buildingCode, imageURL, 
 }
 
 async function findCafesWithDrinks(selectedDrinks) {
-    let drinksList = selectedDrinks.map(drink => `'${drink}'`).join(', ');
-
-    const query = `
-        SELECT c.*
-        FROM Cafe c
-        WHERE NOT EXISTS (
-            (SELECT name FROM Drink WHERE name IN (${drinksList}))
-            MINUS
-            (SELECT s.drinkName
-             FROM Serves s
-             WHERE s.cafeID = c.cafeID)
-        )
-    `;
-
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(query);
-        return {status: 'success', data: result.rows, message: "successfully got cafe with drinks!"};
-    }).catch(() => {
-        console.error("There was an error while trying to find Cafes.");
-        return {status: 'failure', data: [], message: "something went wrong when finding cafe."};
+        try {
+            const allDrinksResult = await fetchAllDrinkNames();
+            console.log('All Drinks Result:', allDrinksResult);
 
-    })
+            if (allDrinksResult.status === 'error') {
+                return { status: 'error', data: [], message: "Error retrieving drink names." };
+            }
+
+            const allDrinks = allDrinksResult.data.map(row => row[0]);
+            console.log('All Drinks:', allDrinks);
+
+            console.log('Selected Drinks:', selectedDrinks);
+
+            if (!Array.isArray(selectedDrinks)
+                || !selectedDrinks.every(drink => typeof drink === 'string' && /^[\w\s]+$/.test(drink))
+                || !selectedDrinks.every(drink => allDrinks.includes(drink))) {
+                return { status: 'failure', data: [], message: "Invalid drink names." };
+            }
+
+            const placeholders = selectedDrinks.map((_, index) => `:drink${index}`).join(', ');
+            console.log('Placeholders:', placeholders);
+
+            const query = `
+                SELECT c.*
+                FROM Cafe c
+                WHERE NOT EXISTS (
+                        (SELECT name FROM Drink WHERE name IN (${placeholders}))
+                        MINUS
+                        (SELECT s.drinkName
+                         FROM Serves s
+                         WHERE s.cafeID = c.cafeID)
+                )
+            `;
+            console.log('Query:', query);
+            const bindParams = selectedDrinks.reduce((params, drink, index) => {
+                params[`drink${index}`] = drink;
+                return params;
+            }, {});
+
+            console.log('Bind Params:', bindParams);
+
+            const result = await connection.execute(query, bindParams);
+            console.log('Query Result:', result);
+
+            return { status: 'success', data: result.rows, message: "Successfully got cafes with drinks!" };
+
+        } catch (error) {
+            console.error("There was an error while trying to find cafes:", error);
+            return { status: 'failure', data: [], message: "Something went wrong when finding cafes." };
+        }
+    });
 }
+
+
 
 
 async function insertReview(reviewID, utilityID, userID, cleanliness, functionality, accessibility, description) {
@@ -908,6 +970,7 @@ return await withOracleDB(async (connection) => {
 
 
 module.exports = {
+    projectionQuery,
     findAverageRating,
     updateEmail,
     updatePassword,
