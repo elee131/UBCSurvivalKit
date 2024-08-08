@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getCookie, setCookie} from './CookieHelper';
+import { getCookie, setCookie } from './CookieHelper';
 import "./Utilities.css";
+import ReviewUpdatePopup from './ReviewPopup';
 
 function UserPage() {
   const [userID, setUserID] = useState(null);
@@ -10,12 +11,12 @@ function UserPage() {
   const [password, setPassword] = useState("");
   const [reviews, setReviews] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [selectedReview, setSelectedReview] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    const cookieUserID = getCookie("userID");
-    console.log(cookieUserID)
+     const cookieUserID = getCookie("userID");
+    console.log(cookieUserID);
     if (!cookieUserID) {
       navigate("/login");
       return;
@@ -174,7 +175,6 @@ function UserPage() {
 
   const deleteReviews = async (reviewID, utilityID) => {
     try {
-      console.log(reviewID, utilityID);
       const response = await fetch(`/delete-review/${reviewID}/${utilityID}`, {
         method: 'DELETE',
       });
@@ -234,12 +234,11 @@ function UserPage() {
   };
 
   return (
-    <div className = "features-container">
+    <div className="features-container">
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
 
-      <div>
       <div>
         <label>
           Change email:
@@ -274,20 +273,29 @@ function UserPage() {
         </label>
       </div>
 
-        </div>
       {reviews.map((review) => (
-        <div key={review.reviewID}>
-          <p>Review for util: {review.utilityID}</p>
-          <p>Cleanliness: {review.cleanliness}</p>
-          <p>Functionality: {review.functionality}</p>
-          <p>Accessibility: {review.accessibility}</p>
-          <p>Description: {review.description}</p>
-          <button
-            onClick={() => deleteReviews(review.reviewID, review.utilityID)}
-          >
-            Delete Review
-          </button>
-          <p>--------</p>
+        <div key={review.reviewID} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '1rem' }}>
+          <div style={{ flex: 1 }}>
+            <p>Review for util: {review.utilityID}</p>
+            <p>Cleanliness: {review.cleanliness}</p>
+            <p>Functionality: {review.functionality}</p>
+            <p>Accessibility: {review.accessibility}</p>
+            <p>Description: {review.description}</p>
+            <button onClick={() => deleteReviews(review.reviewID, review.utilityID)}>
+              Delete Review
+            </button>
+            <button onClick={() => setSelectedReview(review)}>Update Review</button>
+          </div>
+
+          {selectedReview && selectedReview.reviewID === review.reviewID && (
+            <div style={{ marginLeft: '1rem' }}>
+              <ReviewUpdatePopup
+                review={selectedReview}
+                onClose={() => setSelectedReview(null)}
+                onUpdate={fetchReviews}
+              />
+            </div>
+          )}
         </div>
       ))}
 
@@ -298,9 +306,7 @@ function UserPage() {
           <p>Amenity Type: {request.amenityType}</p>
           <p>Status: {request.status}</p>
           <p>Description: {request.requestDescription}</p>
-          <button
-            onClick={() => deleteRequests(request.requestID)}
-          >
+          <button onClick={() => deleteRequests(request.requestID)}>
             Delete Request
           </button>
           <p>--------</p>

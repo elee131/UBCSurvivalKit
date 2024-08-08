@@ -794,6 +794,29 @@ async function deleteRequest(requestID) {
     });
 }
 
+
+async function updateReview(reviewID, utilityID, newDescription) {
+        return await withOracleDB(async (connection) => {
+            const result = await connection.execute(
+                `UPDATE Review SET description = :newDescription WHERE reviewID = :reviewID AND utilityID = :utilityID`,
+                [newDescription, reviewID, utilityID],
+                { autoCommit: true }
+            );
+
+            if (result.rowsAffected && result.rowsAffected > 0) {
+                return { status: 'success', message: 'Review has been updated successfully.' };
+            } else {
+                return { status: 'failure', message: 'No review found with the provided information.' };
+            }
+
+    }).catch(() => {
+        console.error('Failed to update the review:', error);
+        return { status: 'error', message: 'There was an error while updating the review.' };
+    });
+}
+
+
+
 async function updateUsername(userID, newName) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -909,6 +932,7 @@ return await withOracleDB(async (connection) => {
 
 module.exports = {
     findAverageRating,
+    updateReview,
     updateEmail,
     updatePassword,
     updateUsername,
