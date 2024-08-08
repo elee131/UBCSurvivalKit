@@ -301,7 +301,8 @@ async function projectionQuery(tableName, attributes) {
     try {
         return await withOracleDB(async (connection) => {
             const result = await connection.execute(query);
-            return { status: 'success', data: result.rows, message: "Query successfully executed." };
+            const columnNames = result.metaData.map(meta => meta.name);
+            return { status: 'success', data: result.rows, columns: columnNames, message: "Query successfully executed." };
         });
     } catch (error) {
         return { status: 'error', data: [], message: "Error executing query.", error: error.message };

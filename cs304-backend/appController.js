@@ -240,7 +240,14 @@ router.get("/generic-projection", async (req, res) => {
     const attributeArray = Array.isArray(attributes) ? attributes : attributes ? attributes.split(',') : [];
 
     const result = await appService.projectionQuery(tableName, attributeArray);
-    handleQueryResult(result, res);
+
+    if (result.status === 'success') {
+        res.status(200).json({success: true, data: result.data, columns: result.columns, message: result.message});
+    } else if (result.status === 'failure') {
+        res.status(400).json({success: false, message: result.message});
+    } else {
+        res.status(500).json({success: false, message: result.message});
+    }
 });
 
 
