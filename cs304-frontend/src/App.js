@@ -13,6 +13,7 @@ import AdminPage from "./pages/AdminPage";
 import Features from "./pages/Features";
 import APITest from "./pages/APITest";
 import FullDBPage from "./pages/FullDBPage";
+import FindReviews from "./pages/FindReviews";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/dbpage" element={<FullDBPage />} />
         <Route path="/testing" element={<APITest />} />
+        <Route path="/findreviews" element={<FindReviews />} />
       </Routes>
     </BrowserRouter>
   );
