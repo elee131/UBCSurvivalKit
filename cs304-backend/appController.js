@@ -456,6 +456,21 @@ router.delete("/delete-request/:requestID", async (req, res) => {
   }
 });
 
+
+router.post("/update-review", async (req, res) => {
+    const { reviewID, utilityID, newDescription} = req.body;
+    const updateResult = await appService.updateReview(reviewID, utilityID, newDescription);
+
+     if (updateResult.status === 'success') {
+            res.status(200).json({ success: true, message: updateResult.message });
+        } else if (updateResult.status === 'failure') {
+            res.status(404).json({ success: false, message: updateResult.message });
+        } else {
+            res.status(400).json({ success: false, message: updateResult.message });
+        }z
+    });
+
+
 router.post("/update-username", async (req, res) => {
   const { userID, newName } = req.body;
   const updateResult = await appService.updateUsername(userID, newName);
