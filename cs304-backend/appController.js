@@ -304,14 +304,12 @@ router.get("/generic-projection", async (req, res) => {
   const result = await appService.projectionQuery(tableName, attributeArray);
 
   if (result.status === "success") {
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: result.data,
-        columns: result.columns,
-        message: result.message,
-      });
+    res.status(200).json({
+      success: true,
+      data: result.data,
+      columns: result.columns,
+      message: result.message,
+    });
   } else if (result.status === "failure") {
     res.status(400).json({ success: false, message: result.message });
   } else {
@@ -500,7 +498,7 @@ router.post("/update-password", async (req, res) => {
   }
 });
 
-router.get("/select-reviews", async (req, res) => {
+router.post("/select-reviews", async (req, res) => {
   const { query } = req.body;
   const result = await appService.selectReviews(query);
 

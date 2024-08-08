@@ -1250,7 +1250,8 @@ async function selectReviews(search) {
     query = query
       .replace(/&&/g, "AND")
       .replace(/\|\|/g, "OR")
-      .replace(/==/g, "=");
+      .replace(/==/g, "=")
+      .replace(/!=/g, "<>");
     console.log("formatted query: ", query);
     return await withOracleDB(async (connection) => {
       const result = await connection.execute(
