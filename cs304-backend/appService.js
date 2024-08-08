@@ -1108,28 +1108,33 @@ async function deleteRequest(requestID) {
   });
 }
 
-
 async function updateReview(reviewID, utilityID, newDescription) {
-        return await withOracleDB(async (connection) => {
-            const result = await connection.execute(
-                `UPDATE Review SET description = :newDescription WHERE reviewID = :reviewID AND utilityID = :utilityID`,
-                [newDescription, reviewID, utilityID],
-                { autoCommit: true }
-            );
+  return await withOracleDB(async (connection) => {
+    const result = await connection.execute(
+      `UPDATE Review SET description = :newDescription WHERE reviewID = :reviewID AND utilityID = :utilityID`,
+      [newDescription, reviewID, utilityID],
+      { autoCommit: true }
+    );
 
-            if (result.rowsAffected && result.rowsAffected > 0) {
-                return { status: 'success', message: 'Review has been updated successfully.' };
-            } else {
-                return { status: 'failure', message: 'No review found with the provided information.' };
-            }
-
-    }).catch(() => {
-        console.error('Failed to update the review:', error);
-        return { status: 'error', message: 'There was an error while updating the review.' };
-    });
+    if (result.rowsAffected && result.rowsAffected > 0) {
+      return {
+        status: "success",
+        message: "Review has been updated successfully.",
+      };
+    } else {
+      return {
+        status: "failure",
+        message: "No review found with the provided information.",
+      };
+    }
+  }).catch(() => {
+    console.error("Failed to update the review:", error);
+    return {
+      status: "error",
+      message: "There was an error while updating the review.",
+    };
+  });
 }
-
-
 
 async function updateUsername(userID, newName) {
   return await withOracleDB(async (connection) => {
@@ -1274,7 +1279,13 @@ async function selectReviews(search) {
       .replace(/&&/g, "AND")
       .replace(/\|\|/g, "OR")
       .replace(/==/g, "=")
-      .replace(/!=/g, "<>");
+      .replace(/!=/g, "<>")
+      .replace(/'/g, "''")
+      .replace(/"/g, "''")
+      .replace("<script>", "")
+      .replace("drop", "")
+      .replace(";", "")
+      .replace("table", "");
     console.log("formatted query: ", query);
     return await withOracleDB(async (connection) => {
       const result = await connection.execute(
@@ -1308,7 +1319,7 @@ async function selectReviews(search) {
 }
 
 module.exports = {
-  updateReview, 
+  updateReview,
   projectionQuery,
   findAverageRating,
   updateEmail,
