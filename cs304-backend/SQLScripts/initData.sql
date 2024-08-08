@@ -464,7 +464,7 @@ VALUES
 
 INSERT INTO Washroom (utilityID, gender, numStalls, accessibilityFeature)
 VALUES
-(10000001, 'FEMALE', 5, 'WHEELCHAIR STALL');
+(10000001, 'FEMALE', 5, 'EMERGENCY CORD');
 
 INSERT INTO Washroom (utilityID, gender, numStalls, accessibilityFeature)
 VALUES
@@ -486,7 +486,7 @@ VALUES
 
 INSERT INTO WaterFountain (utilityID, hasColdWater, hasHotWater)
 VALUES
-(30000001, 'TRUE', 'FALSE');
+(30000001, 'TRUE', 'TRUE');
 
 INSERT INTO WaterFountain (utilityID, hasColdWater, hasHotWater)
 VALUES
@@ -545,6 +545,9 @@ VALUES
 INSERT INTO Review
 VALUES
     (1, 10000000, 0, 1, 1, 1, 'REALLY BAD');
+INSERT INTO Review
+VALUES
+    (1, 10000001, 0, 1, 1, 1, 'I did not enjoy my time here.');
 
 INSERT INTO Review
 VALUES

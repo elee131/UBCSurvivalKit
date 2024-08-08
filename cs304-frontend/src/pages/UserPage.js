@@ -238,6 +238,7 @@ function UserPage() {
       <div className="Navbar">
         <Link to="/">Home</Link>
       </div>
+      <h1>Hiu</h1>
 
       <div>
         <label>

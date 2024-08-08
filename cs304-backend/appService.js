@@ -733,6 +733,20 @@ async function findMaxCafeID() {
   });
 }
 
+// async function findUserName(userIO) {
+//   return await withOracleDB(async (connection) => {
+//     const result = await connection.execute(
+//         `Select username from userInfo where userID = :userID`,
+//         [userIO]
+//     );
+//     console.log(result);
+//     return result.rows[0][0];
+//   }).catch((error) => {
+//     console.error(error);
+//     return { status: "error", message: "failed to find max locationID" };
+//   });
+// }
+
 async function findMaxLocationID() {
   return await withOracleDB(async (connection) => {
     const result = await connection.execute(

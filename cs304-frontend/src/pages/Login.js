@@ -29,6 +29,7 @@ function App() {
         setCookie("userID", result.data[0][0]);
         setCookie("isAdmin", result.data[0][2]);
         alert("Success!");
+
       } else {
         console.error("Error from server: ", result.message);
       }
@@ -53,7 +54,7 @@ function App() {
             placeholder="Email"
           />
           <input
-            type="text"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
@@ -62,7 +63,6 @@ function App() {
             <div className="Login-submit">
               <button
                 onClick={() => {
-                  alert("username: " + email + "\nEmail: " + password);
                   login();
                 }}
               >
