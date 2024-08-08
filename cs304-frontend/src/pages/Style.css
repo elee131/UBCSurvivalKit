@@ -6,6 +6,30 @@
   padding: 1rem 1rem;
 }
 
+.resultTable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.search-button {
+  margin-top: 10px;
+  padding: 5px;
+  background-color: rgb(80, 169, 114);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+
+
+.search-button:hover {
+  background-color: rgb(60, 149, 94);
+}
+
 .App {
   text-align: center;
 }

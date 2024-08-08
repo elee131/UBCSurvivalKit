@@ -12,6 +12,7 @@ import UserPage from "./pages/UserPage";
 import AdminPage from "./pages/AdminPage";
 import Features from "./pages/Features";
 import APITest from "./pages/APITest";
+import FullDBPage from "./pages/FullDBPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/user" element={<UserPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/features" element={<Features />} />
+        <Route path="/dbpage" element={<FullDBPage />} />
         <Route path="/testing" element={<APITest />} />
       </Routes>
     </BrowserRouter>
