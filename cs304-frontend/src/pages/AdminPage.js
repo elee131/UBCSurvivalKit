@@ -20,34 +20,50 @@ const testList = [
 function UtilPopUp(props) {
   const request = props.request;
   const [building, setBuilding] = useState(request.building);
-  const [location, setLocation] = useState(0);
-  const [util, setUtil] = useState(request.amenityType);
-  const [desc, setDesc] = useState(request.desc);
-
-
-  // const getLocationID = async () => {
-  //   try {
-  //     const response = await fetch("/get-max-locationID", {
-  //       method: "GET",
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`Network response was not ok: ${response.statusText}`);
-  //     }
-  //     const result = await response.json();
-  //     console.log(result);
-  //     if (result.success) {
-  //       console.log(`result.data[0]: ${result.data[0]}`);
-  //       setLocation(result.data[0]);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-
+  const [floorNumber, setFloorNumber] = useState(0);
+  const [util, setUtil] = useState("waterfountain");
+  const [locationDesc, setLocationDesc] = useState("");
+  const [microwaveSize, setMicrowaveSize] = useState("");
+  const [hasColdWater, setHasColdWater] = useState("");
+  const [hasHotWater, setHasHotWater] = useState("");
+  const [gender, setGender] = useState("");
+  const [numStalls, setNumStalls] = useState(1);
+  const [accessibilityFeature, setAccessibilityFeature] = useState("");
+  const [locationID, setLocationID] = useState(0);
   const addRequest = async () => {
-    // await getLocationID();
+
+    try {
+      const response = await fetch("/insert-location", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          floor:floorNumber,
+          locationDescription: locationDesc
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+            `Network response was not ok: ${response.statusText}`
+        );
+      }
+      const result = await response.json();
+      console.log(result);
+      if (!result.success) {
+        console.error("Error from server: "+ result.message);
+        alert("Failed to insert location:"+ result.message);
+        return;
+      } else {
+        setLocationID(result.data);
+      }
+
+    } catch (e) {
+      alert("Error while inserting location" + e);
+    }
+
+
     if (util === "waterfountain") {
       // insert a waterfountain
       try {
@@ -57,8 +73,11 @@ function UtilPopUp(props) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            overallRating: 0.0,
             buildingCode: building,
-            locationID: location,
+            locationID:locationID,
+            hasColdWater: hasColdWater,
+            hasHotWater: hasHotWater
           }),
         });
 
@@ -73,12 +92,13 @@ function UtilPopUp(props) {
           alert("Success! New waterfountain has been added");
         } else {
           console.error("Error from server: ", result.message);
+          alert("Failed to insert microwave:", result.message);
         }
       } catch (error) {
         console.error("error: ", error);
       }
     } else if (util === "microwave") {
-      // insert a microwave
+
       try {
         const response = await fetch("/insert-microwave", {
           method: "POST",
@@ -86,8 +106,10 @@ function UtilPopUp(props) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            overallRating: 0.0,
             buildingCode: building,
-            locationID: location,
+            locationID:locationID,
+            microwaveSize:microwaveSize
           }),
         });
 
@@ -101,7 +123,8 @@ function UtilPopUp(props) {
         if (result.success) {
           alert("Success! New microwave has been added");
         } else {
-          console.error("Error from server: ", result.message);
+          console.error("Error from server: "+ result.message);
+          alert("Failed to insert microwave:"+  result.message);
         }
       } catch (error) {
         console.error("error: ", error);
@@ -115,8 +138,12 @@ function UtilPopUp(props) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            buildingCode: building,
-            locationID: location,
+            overallRating: 0.0,
+            buildingCode:building,
+            locationID:locationID,
+            gender:gender,
+            numStalls:numStalls,
+            accessibilityFeatures: accessibilityFeature,
           }),
         });
 
@@ -131,6 +158,7 @@ function UtilPopUp(props) {
           alert("Success! New washroom has been added");
         } else {
           console.error("Error from server: ", result.message);
+          alert("Failed to insert microwave:" +  result.message);
         }
       } catch (error) {
         console.error("error: ", error);
@@ -144,54 +172,126 @@ function UtilPopUp(props) {
   };
 
   return (
-    <div>
-      <Popup trigger={<button> Accept Request </button>} modal nested>
-        {(close) => (
-          <div className="modal">
-            <input
-              type="text"
-              value={building}
-              placeholder="Building Code"
-              onChange={(e) => {
-                setBuilding(e.target.value);
-              }}
-            />
-            <input
-              type="number"
-              value={location}
-              placeholder="Location ID"
-              onChange={(e) => {
-                setLocation(e.target.value);
-              }}
-            />
-            <input
-              type="text"
-              value={util}
-              placeholder="type"
-              onChange={(e) => {
-                setUtil(e.target.value);
-              }}
-            />
-            <textarea
-              value={desc}
-              placeholder="Description"
-              onChange={(e) => {
-                setDesc(e.target.value);
-              }}
-              rows={4}
-              columns={20}
-            />
-            <button
-              onClick={() => {
-                addRequest();
-              }}
-            >
-              Add
-            </button>
-          </div>
-        )}
-      </Popup>
-    </div>
+      <div>
+        <Popup trigger={<button> Accept Request </button>} modal nested>
+          {(close) => (
+              <div className="modal">
+                <label>Building Code</label>
+                <input
+                    type="text"
+                    value={building}
+                    placeholder="Building Code"
+                    onChange={(e) => {
+                      setBuilding(e.target.value);
+                    }}
+                />
+                <label>What floor is the utility located?</label>
+                <input
+                    type="number"
+                    value={floorNumber}
+                    placeholder="Floor Number"
+                    onChange={(e) => {
+                      setFloorNumber(e.target.value);
+                    }}
+                />
+                <label>Briefly describe the location.</label>
+                <textarea
+                    value={locationDesc}
+                    placeholder="location description"
+                    onChange={(e) => {
+                      setLocationDesc(e.target.value);
+                    }}
+                    rows={4}
+                    columns={20}
+                />
+                <select
+                    onChange={(e) => setUtil(e.target.value)}
+                    value={util}
+                >
+                  <option value="waterfountain">Water Fountain</option>
+                  <option value="microwave">Microwave</option>
+                  <option value="washroom">Washroom</option>
+                </select>
+
+                {util === "waterfountain" && (
+                    <>
+                      <label>Does it have Cold Water?</label>
+                      <select
+                          onChange={(e) => setHasColdWater(e.target.value)}
+                          value={hasColdWater}
+                      >
+                        <option value="TRUE ">Yes</option>
+                        <option value="FALSE">No</option>
+
+                      </select>
+                      <label>Does it have Hot Water?</label>
+                      <select
+                          onChange={(e) => setHasHotWater(e.target.value)}
+                          value={hasHotWater}
+                      >
+                        <option value="TRUE ">Yes</option>
+                        <option value="FALSE">No</option>
+                      </select>
+                    </>
+                )}
+
+                {util === "microwave" && (
+                    <>
+                      <label>Describe the size of the microwave.</label>
+                      <input
+                          type="text"
+                          value={microwaveSize}
+                          placeholder="Microwave Size"
+                          onChange={(e) => {
+                            setMicrowaveSize(e.target.value);
+                          }}
+                      />
+                    </>
+                )}
+
+                {util === "washroom" && (
+                    <>
+                      <label>Gender of the washroom?</label>
+                      <input
+                          type="text"
+                          value={gender}
+                          placeholder="Gender"
+                          onChange={(e) => {
+                            setGender(e.target.value);
+                          }}
+                      />
+                      <label>Number of stalls in the washroom?</label>
+                      <input
+                          type="number"
+                          value={numStalls}
+                          placeholder="Number of Stalls"
+                          onChange={(e) => {
+                            setNumStalls(e.target.value);
+                          }}
+                      />
+                      <label>List any accessibility Features here.</label>
+                      <textarea
+                          value={accessibilityFeature}
+                          placeholder="Accessibility Feature"
+                          onChange={(e) => {
+                            setAccessibilityFeature(e.target.value);
+                          }}
+                      />
+                    </>
+                )}
+
+
+                <button
+                    onClick={() => {
+                      addRequest();
+                    }}
+                >
+                  Add
+                </button>
+              </div>
+          )}
+        </Popup>
+      </div>
   );
 }
 

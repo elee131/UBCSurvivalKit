@@ -41,7 +41,7 @@ function App() {
 
             <div className="checkbox-container">
                 <label className="tableName">
-                    <h2>TableNames:</h2>
+                    <h2>TableName</h2>
 
                     <br/>
                     Available TableNames(must match case exactly):
@@ -61,7 +61,7 @@ function App() {
                     />
                 </label>
                 <label className="Attributes">
-                    <h2>Attributes:</h2>
+                    <h2>Attributes</h2>
                     <br/>
                     Attributes must be entered in a comma-separated list without whitespaces.
                     <br/>

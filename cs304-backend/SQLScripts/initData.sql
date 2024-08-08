@@ -256,6 +256,14 @@ VALUES
 
 INSERT INTO Rating (overallRating, isRecommended)
 VALUES
+(0.0, 'FALSE');
+
+INSERT INTO Rating (overallRating, isRecommended)
+VALUES
+(1.5, 'FALSE');
+
+INSERT INTO Rating (overallRating, isRecommended)
+VALUES
 (3.8, 'FALSE');
 
 INSERT INTO Rating (overallRating, isRecommended)
@@ -303,15 +311,15 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000001, 5.0, 'ICCS', '/images/ICICS', 2);
+(10000001, 1.5, 'ICCS', '/images/ICICS', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000002, 5.0, 'MATX', '/images/MATX', 1);
+(10000002, 3.8, 'MATX', '/images/MATX', 1);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(10000003, 5.0, 'NEST', '/images/NEST', 3);
+(10000003, 4.9, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
@@ -325,19 +333,19 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000001, 5.0, 'ICCS', '/images/ICICS', 1);
+(20000001, 1.5, 'ICCS', '/images/ICICS', 1);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000002, 5.0, 'MATX', '/images/MATX', 2);
+(20000002, 2.7, 'MATX', '/images/MATX', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000003, 5.0, 'NEST', '/images/NEST', 3);
+(20000003, 4.9, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(20000004, 5.0, 'KAIS', '/images/KAIS', 4);
+(20000004, 3.8, 'KAIS', '/images/KAIS', 4);
 
 
 
@@ -347,19 +355,19 @@ VALUES
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000001, 5.0, 'ICCS', '/images/ICICS', 1);
+(30000001, 1.5, 'ICCS', '/images/ICICS', 1);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000002, 5.0, 'MATX', '/images/MATX', 2);
+(30000002, 2.7, 'MATX', '/images/MATX', 2);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000003, 2.7, 'NEST', '/images/NEST', 3);
+(30000003, 4.9, 'NEST', '/images/NEST', 3);
 
 INSERT INTO Utility(utilityID, overallRating, buildingCode, imageURl, locationID)
 VALUES
-(30000004, 5.0, 'KAIS', '/images/KAIS', 4);
+(30000004, 3.8, 'KAIS', '/images/KAIS', 4);
 
 
 

@@ -586,9 +586,12 @@ async function utilsWithMinNumOfReviews(minReviewNum) {
 }
 
 async function insertLocation(locationID, floor, description) {
+
+  console.log("locationID" +locationID);
+  console.log("floor "+ floor);
   return await withOracleDB(async (connection) => {
     const result = await connection.execute(
-      `INSERT INTO LOCATION (locationID,floor, description)
+      `INSERT INTO LOCATION (locationID, floor, locationDescription)
             VALUES (:locationID,:floor, :description)`,
       [locationID, floor, description],
 
@@ -601,7 +604,7 @@ async function insertLocation(locationID, floor, description) {
         message: "Failed to create location with given information.",
       };
     }
-    return { status: "success", message: "New location created successfully." };
+    return { status: "success", data: locationID, message: "New location created successfully." };
   }).catch(() => {
     return { status: "false", message: "Had error while inserting location" };
   });
@@ -737,8 +740,7 @@ async function findMaxLocationID() {
              FROM LOCATION`
     );
     console.log(result);
-    const maxID = result.rows[0][0];
-    return { status: "success", data: maxID, message: "found max locationID" };
+    return result.rows[0][0];
   }).catch((error) => {
     console.error(error);
     return { status: "error", message: "failed to find max locationID" };

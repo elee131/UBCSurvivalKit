@@ -24,14 +24,27 @@
   border-radius: 4px;
 }
 
-
-
 .search-button:hover {
   background-color: rgb(60, 149, 94);
 }
 
 .App {
   text-align: center;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal input,
+.modal select,
+.modal textarea,
+.modal button {
+  width: 80%;
 }
 
 .App-header {

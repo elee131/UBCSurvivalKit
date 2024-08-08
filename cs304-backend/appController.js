@@ -181,13 +181,20 @@ router.post("/insert-location", async (req, res) => {
   }
 
   const { floor, locationDescription } = req.body;
-  const insertResult = await appService.insertLocation()(
-    newLocationID + 1,
-    floor,
-    locationDescription
-  );
+  const insertResult =
+      await appService.insertLocation(newLocationID + 1, floor, locationDescription);
 
-  handleInsertResult(insertResult, res);
+  if (insertResult.status === "success") {
+    res.status(200).json({
+      success: true,
+      data: insertResult.data,
+      message: insertResult.message,
+    });
+  } else if (insertResult.status === "failure") {
+    res.status(400).json({ success: false, message: insertResult.message });
+  } else {
+    res.status(500).json({ success: false, message: insertResult.message });
+  }
 });
 
 router.post("/new-user", async (req, res) => {
@@ -288,10 +295,6 @@ router.post("/insert-washroom", async (req, res) => {
   handleInsertResult(insertResult, res);
 });
 
-router.get("/get-max-locationID", async (req, res) => {
-  const result = await appService.findMaxLocationID();
-  handleQueryResult(result, res);
-});
 
 router.get("/generic-projection", async (req, res) => {
   const { tableName, attributes } = req.query;
